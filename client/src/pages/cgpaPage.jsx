@@ -107,19 +107,19 @@ const Cgpa = () => {
   useEffect(() => {
     // Push a duplicate entry to the history stack
     window.history.pushState(null, document.title, window.location.href);
-    
+
     // Handle the popstate event (when back button is clicked)
-    const handlePopState = (event) => {
+    const handlePopState = () => {
       // Push another entry to prevent going back
       window.history.pushState(null, document.title, window.location.href);
-      
+
       // Show a message indicating they should use the logout button
       alert("Please use the logout button to return to the login page.");
     };
-    
+
     // Add event listener for the popstate event
     window.addEventListener('popstate', handlePopState);
-    
+
     // Clean up event listener when component unmounts
     return () => {
       window.removeEventListener('popstate', handlePopState);
@@ -139,7 +139,7 @@ const Cgpa = () => {
             </div>
             <h2 className="text-2xl font-bold text-red-600 mb-2">Access Denied</h2>
             <p className="text-gray-600 mb-6">Login credentials not found. Please log in again to access your CGPA data.</p>
-            <button 
+            <button
               onClick={() => navigate('/')}
               className="w-full px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl hover:from-indigo-700 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl font-medium"
             >
@@ -152,8 +152,8 @@ const Cgpa = () => {
   }
 
   // Get the latest CGPA info if available
-  const latestCgpaData = cgpaData.length > 0 ? 
-    cgpaData.filter(sem => sem.CGPA !== "-").slice(-1)[0] : 
+  const latestCgpaData = cgpaData.length > 0 ?
+    cgpaData.filter(sem => sem.CGPA !== "-").slice(-1)[0] :
     null;
 
   return (
@@ -170,7 +170,7 @@ const Cgpa = () => {
                 <p className="text-gray-600 mt-1 text-sm sm:text-base">Track your academic performance</p>
               </div>
             </div>
-            
+
             {loading ? (
               <div className="flex flex-col items-center justify-center py-12 sm:py-20">
                 <div className="relative">
@@ -212,7 +212,7 @@ const Cgpa = () => {
                         </div>
                       </div>
                       <div className="w-full bg-white/20 rounded-full h-2">
-                        <div 
+                        <div
                           className="bg-white rounded-full h-2 transition-all duration-1000 ease-out"
                           style={{ width: `${(parseFloat(latestCgpaData.CGPA) / 10) * 100}%` }}
                         ></div>
@@ -220,7 +220,7 @@ const Cgpa = () => {
                     </div>
                   </div>
                 )}
-                
+
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 space-y-3 sm:space-y-0">
                   <h2 className="text-xl sm:text-2xl font-bold text-gray-800 flex items-center">
                     <svg className="hidden sm:block w-5 h-5 sm:w-6 sm:h-6 mr-3 text-indigo-600" fill="currentColor" viewBox="0 0 20 20">
@@ -233,17 +233,17 @@ const Cgpa = () => {
                     <span className="font-semibold text-indigo-600">{cgpaData.length}</span>
                   </div>
                 </div>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {cgpaData.length > 0 ? (
                     <>
                       {/* Only show semesters that have actual data */}
-                      {cgpaData.filter(semester => 
-                        semester.GPA !== "-" || 
-                        semester.CGPA !== "-" || 
+                      {cgpaData.filter(semester =>
+                        semester.GPA !== "-" ||
+                        semester.CGPA !== "-" ||
                         (semester.TOTAL_CREDITS && semester.TOTAL_CREDITS > 0)
                       ).map((semester, index) => (
-                        <SemesterCard 
+                        <SemesterCard
                           key={index}
                           semester={semester.SEMESTER}
                           gpa={semester.GPA}
@@ -251,11 +251,11 @@ const Cgpa = () => {
                           credits={semester.CREDITS}
                         />
                       ))}
-                      
+
                       {/* Show empty state message if all semesters were filtered out */}
-                      {cgpaData.filter(semester => 
-                        semester.GPA !== "-" || 
-                        semester.CGPA !== "-" || 
+                      {cgpaData.filter(semester =>
+                        semester.GPA !== "-" ||
+                        semester.CGPA !== "-" ||
                         (semester.TOTAL_CREDITS && semester.TOTAL_CREDITS > 0)
                       ).length === 0 && (
                         <div className="col-span-full">

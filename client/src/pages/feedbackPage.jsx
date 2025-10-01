@@ -16,19 +16,19 @@ const Feedback = () => {
   useEffect(() => {
     // Push a duplicate entry to the history stack
     window.history.pushState(null, document.title, window.location.href);
-    
+
     // Handle the popstate event (when back button is clicked)
-    const handlePopState = (event) => {
+    const handlePopState = () => {
       // Push another entry to prevent going back
       window.history.pushState(null, document.title, window.location.href);
-      
+
       // Show a message indicating they should use the logout button
       alert("Please use the logout button to return to the login page.");
     };
-    
+
     // Add event listener for the popstate event
     window.addEventListener('popstate', handlePopState);
-    
+
     // Clean up event listener when component unmounts
     return () => {
       window.removeEventListener('popstate', handlePopState);
@@ -43,7 +43,7 @@ const Feedback = () => {
           <h2 className="text-xl font-semibold text-red-600 mb-4">Error</h2>
           <p className="text-gray-700 mb-6">Login credentials not found. Please log in again.</p>
           <div className="flex justify-center">
-            <button 
+            <button
               onClick={() => navigate('/')}
               className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-md hover:shadow-lg"
             >
@@ -73,7 +73,7 @@ const Feedback = () => {
         password: decodedPassword,
         feedback_index: feedbackIndex
       })
-      
+
       setMessage(response.message || 'Feedback automation started successfully!')
     } catch (err) {
       setError(err.response?.data?.detail || 'An error occurred while starting the feedback automation')
@@ -90,7 +90,7 @@ const Feedback = () => {
           <Navbar />
           <div className="bg-white rounded-2xl shadow-xl p-4 md:p-6 hover:shadow-2xl transition-all duration-300">
             <h1 className="text-2xl font-bold text-blue-700 mb-4 border-b-2 border-blue-100 pb-2">Feedback Automation</h1>
-            
+
             {loading && (
               <div className="mb-8">
                 <div className="w-full bg-gray-200 rounded-full h-4 shadow-inner">
@@ -99,7 +99,7 @@ const Feedback = () => {
                 <p className="text-blue-600 mt-3 text-center font-medium">Processing your request...</p>
               </div>
             )}
-            
+
             {message && (
               <div className="p-4 md:p-5 mb-8 bg-gradient-to-r from-green-50 to-green-100 border border-green-200 text-green-700 rounded-xl shadow-sm">
                 <div className="flex items-center">
@@ -112,7 +112,7 @@ const Feedback = () => {
                 </div>
               </div>
             )}
-            
+
             {error && (
               <div className="p-4 md:p-5 mb-8 bg-gradient-to-r from-red-50 to-red-100 border border-red-200 text-red-700 rounded-xl shadow-sm">
                 <div className="flex items-center">
@@ -125,7 +125,7 @@ const Feedback = () => {
                 </div>
               </div>
             )}
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-5 md:p-6 rounded-xl border border-blue-200 hover:shadow-lg transition-all duration-300 hover:scale-[1.02] transform shadow-md">
                 <div className="bg-blue-100 rounded-full p-3 w-14 h-14 flex items-center justify-center mb-4 shadow-sm">
@@ -135,7 +135,7 @@ const Feedback = () => {
                 </div>
                 <h2 className="text-xl font-bold text-blue-800 mb-4">End Semester Feedback</h2>
                 <p className="text-gray-700 mb-6">Automate the end semester feedback forms for all courses.</p>
-                <button 
+                <button
                   onClick={() => handleAutoFeedback(0)}
                   disabled={loading}
                   className="w-full px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-300 disabled:bg-blue-300 shadow-md hover:shadow-lg font-medium text-base"
@@ -143,7 +143,7 @@ const Feedback = () => {
                   {loading ? 'Processing...' : 'Start Automation'}
                 </button>
               </div>
-              
+
               <div className="bg-gradient-to-br from-green-50 to-green-100 p-5 md:p-6 rounded-xl border border-green-200 hover:shadow-lg transition-all duration-300 hover:scale-[1.02] transform shadow-md">
                 <div className="bg-green-100 rounded-full p-3 w-14 h-14 flex items-center justify-center mb-4 shadow-sm">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7 text-green-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -152,7 +152,7 @@ const Feedback = () => {
                 </div>
                 <h2 className="text-xl font-bold text-green-800 mb-4">Intermediate Feedback</h2>
                 <p className="text-gray-700 mb-6">Automate the intermediate feedback forms for all courses.</p>
-                <button 
+                <button
                   onClick={() => handleAutoFeedback(1)}
                   disabled={loading}
                   className="w-full px-4 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-all duration-300 disabled:bg-green-300 shadow-md hover:shadow-lg font-medium text-base"
@@ -161,7 +161,7 @@ const Feedback = () => {
                 </button>
               </div>
             </div>
-            
+
             <div className="mt-8 p-4 md:p-6 bg-gradient-to-r from-yellow-50 to-amber-50 border border-yellow-200 rounded-xl shadow-md">
               <div className="flex items-center mb-4">
                 <div className="bg-yellow-100 rounded-full p-2 mr-3 shadow-sm">

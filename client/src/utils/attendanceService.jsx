@@ -7,7 +7,7 @@ const secureStorage = {
     try {
       sessionStorage.setItem('nimora_rollno', rollNo);
       sessionStorage.setItem('nimora_auth', btoa(password)); // Still base64 encoded for minimal obfuscation
-    } catch (error) {
+    } catch {
       console.warn('Failed to store credentials securely');
     }
   },
@@ -17,7 +17,7 @@ const secureStorage = {
       const rollNo = sessionStorage.getItem('nimora_rollno');
       const auth = sessionStorage.getItem('nimora_auth');
       return rollNo && auth ? { rollNo, password: atob(auth) } : null;
-    } catch (error) {
+    } catch {
       return null;
     }
   },
@@ -27,7 +27,7 @@ const secureStorage = {
       sessionStorage.removeItem('nimora_rollno');
       sessionStorage.removeItem('nimora_auth');
       sessionStorage.removeItem('nimora_combined_data');
-    } catch (error) {
+    } catch {
       console.warn('Failed to clear credentials');
     }
   },
@@ -35,7 +35,7 @@ const secureStorage = {
   setCombinedData: (data) => {
     try {
       sessionStorage.setItem('nimora_combined_data', JSON.stringify(data));
-    } catch (error) {
+    } catch {
       console.warn('Failed to store combined data');
     }
   },
@@ -44,7 +44,7 @@ const secureStorage = {
     try {
       const data = sessionStorage.getItem('nimora_combined_data');
       return data ? JSON.parse(data) : null;
-    } catch (error) {
+    } catch {
       console.warn('Failed to retrieve combined data');
       return null;
     }
@@ -62,21 +62,17 @@ const enforceHTTPS = () => {
 export const loginUser = async (rollNo, password) => {
   enforceHTTPS();
 
-  try {
-    const result = await apiPost('/data', { rollno: rollNo, password: password });
+  const result = await apiPost('/data', { rollno: rollNo, password: password });
 
-    // Store credentials securely after successful login
-    secureStorage.setCredentials(rollNo, password);
+  // Store credentials securely after successful login
+  secureStorage.setCredentials(rollNo, password);
 
-    // Store the combined data from data response
-    if (result && result.data) {
-      secureStorage.setCombinedData(result.data);
-    }
-
-    return result;
-  } catch (error) {
-    throw error;
+  // Store the combined data from data response
+  if (result && result.data) {
+    secureStorage.setCombinedData(result.data);
   }
+
+  return result;
 };
 
 // Function to fetch student attendance

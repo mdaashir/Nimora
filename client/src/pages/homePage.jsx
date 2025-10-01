@@ -19,7 +19,7 @@ const Home = () => {
     window.history.pushState(null, document.title, window.location.href);
 
     // Handle the popstate event (when back button is clicked)
-    const handlePopState = (event) => {
+    const handlePopState = () => {
       // Push another entry to prevent going back
       window.history.pushState(null, document.title, window.location.href);
 
@@ -84,6 +84,7 @@ const Home = () => {
     }
 
     fetchData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [auth, navigate, getDecodedPassword])
 
   const calculateCombinedData = (data, percentage) => {
@@ -163,10 +164,6 @@ const Home = () => {
 
     // Only recalculate if not already calculating
     calculateCombinedData(attendanceData, newPercentage)
-  }
-
-  const handleLogout = () => {
-    navigate('/')
   }
 
   if (loading) {

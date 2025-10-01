@@ -5,7 +5,7 @@ import Footer from '../components/Footer'
 import { getInternalsData } from '../utils/attendanceService'
 
 // Card Component for Internal Marks
-const InternalCard = ({ course, marks, index }) => {
+const InternalCard = ({ course, marks }) => {
 
   // Extract course code from the course string and course name and marks from assessments array
   const processCourseData = (courseString, marksArray) => {
@@ -101,7 +101,7 @@ const Internals = () => {
         setInternalsData(response || [])
       } catch (err) {
         console.error("Error fetching internals data:", err)
-        
+
         // Check if it's a 404 error (endpoint not found or data not available)
         if (err.response?.status === 404) {
           setError("Internal Data Not Available")
@@ -121,14 +121,14 @@ const Internals = () => {
   // Prevent going back to login page when back button is clicked
   useEffect(() => {
     window.history.pushState(null, document.title, window.location.href)
-    
-    const handlePopState = (event) => {
+
+    const handlePopState = () => {
       window.history.pushState(null, document.title, window.location.href)
       alert("Please use the logout button to return to the login page.")
     }
-    
+
     window.addEventListener('popstate', handlePopState)
-    
+
     return () => {
       window.removeEventListener('popstate', handlePopState)
     }
@@ -142,7 +142,7 @@ const Internals = () => {
           <h2 className="text-xl font-semibold text-red-600 mb-4">Error</h2>
           <p className="text-gray-700 mb-6">Login credentials not found. Please log in again.</p>
           <div className="flex justify-center">
-            <button 
+            <button
               onClick={() => navigate('/')}
               className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-md hover:shadow-lg"
             >
@@ -166,14 +166,13 @@ const Internals = () => {
   // Check if there are any valid marks to display
   const hasValidMarks = processedData.some(item => {
     const { test1, test2, final50, final40 } = (() => {
-      let courseCode = item.course.split(' - ')[0] || item.course
       const test1 = item.marks[1] || ''
       const test2 = item.marks[2] || ''
       const final50 = item.marks[6] || ''
       const final40 = item.marks[item.marks.length - 1] || ''
       return { test1, test2, final50, final40 }
     })()
-    
+
     return (test1 && test1 !== '*' && test1 !== ' ') ||
            (test2 && test2 !== '*' && test2 !== ' ') ||
            (final50 && final50 !== '*' && final50 !== ' ') ||
@@ -187,7 +186,7 @@ const Internals = () => {
           <Navbar />
           <div className="bg-white rounded-2xl shadow-xl p-4 md:p-6 hover:shadow-2xl transition-all duration-300">
             <h1 className="text-2xl font-bold text-blue-700 mb-2 border-b-2 border-blue-100 pb-2">Internal Marks</h1>
-            
+
             {loading ? (
               <div className="flex justify-center items-center py-16">
                 <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-600"></div>
@@ -227,31 +226,30 @@ const Internals = () => {
                 <div className="mb-8 bg-blue-50 p-4 md:p-6 rounded-xl shadow-inner">
                   <p className="text-gray-700 mb-4">Your internal assessment marks are listed below. They are organized by course with individual test scores and final assessments.</p>
                 </div>
-                
+
                 {/* Mobile view - Card layout */}
                 <div className="md:hidden grid grid-cols-1 gap-6 mb-6">
                   {processedData.map((item, index) => {
                     // Check if this course has any valid marks before rendering
                     const { test1, test2, final50, final40 } = (() => {
-                      let courseCode = item.course.split(' - ')[0] || item.course
                       const test1 = item.marks[1] || ''
                       const test2 = item.marks[2] || ''
                       const final50 = item.marks[6] || ''
                       const final40 = item.marks[item.marks.length - 1] || ''
                       return { test1, test2, final50, final40 }
                     })()
-                    
+
                     const hasAnyValidMark = (test1 && test1 !== '*' && test1 !== ' ') ||
                                            (test2 && test2 !== '*' && test2 !== ' ') ||
                                            (final50 && final50 !== '*' && final50 !== ' ') ||
                                            (final40 && final40 !== '*' && final40 !== ' ')
-                    
+
                     if (!hasAnyValidMark) return null
-                    
-                    return <InternalCard key={index} course={item.course} marks={item.marks} index={index} />
+
+                    return <InternalCard key={index} course={item.course} marks={item.marks} />
                   })}
                 </div>
-                
+
                 {/* Desktop view - Table layout */}
                 <div className="hidden md:block">
                   <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200">
@@ -284,40 +282,40 @@ const Internals = () => {
                             const processCourseData = (courseString, marksArray) => {
                               let courseCode = courseString.split(' - ')[0] || courseString
                               let courseName = marksArray[0] || ''
-                              
+
                               const unwantedPatterns = ['BDAMD', 'JP', 'BTECH', 'CSE', 'ECE', 'EEE', 'MECH', 'CIVIL']
-                              
+
                               unwantedPatterns.forEach(pattern => {
                                 courseCode = courseCode.replace(new RegExp(pattern, 'gi'), '').trim()
                               })
-                              
+
                               if (courseName) {
                                 unwantedPatterns.forEach(pattern => {
                                   courseName = courseName.replace(new RegExp(pattern, 'gi'), '').trim()
                                 })
                               }
-                              
+
                               courseCode = courseCode.replace(/\s+/g, ' ').replace(/^[-\s]+|[-\s]+$/g, '').trim()
                               courseName = courseName.replace(/\s+/g, ' ').replace(/^[-\s]+|[-\s]+$/g, '').trim()
-                              
+
                               const test1 = marksArray[1] || ''
                               const test2 = marksArray[2] || ''
                               const final50 = marksArray[6] || ''
                               const final40 = marksArray[marksArray.length - 1] || ''
-                              
+
                               return { courseCode, courseName, test1, test2, final50, final40 }
                             }
-                            
+
                             const { courseCode, courseName, test1, test2, final50, final40 } = processCourseData(item.course, item.marks)
-                            
+
                             // Only show rows that have at least one valid mark
                             const hasAnyValidMark = (test1 && test1 !== '*' && test1 !== ' ') ||
                                                    (test2 && test2 !== '*' && test2 !== ' ') ||
                                                    (final50 && final50 !== '*' && final50 !== ' ') ||
                                                    (final40 && final40 !== '*' && final40 !== ' ')
-                            
+
                             if (!hasAnyValidMark) return null
-                            
+
                             return (
                               <tr key={index} className={`${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} hover:bg-blue-50 transition-colors duration-200`}>
                                 <td className="px-6 py-4 whitespace-nowrap">
@@ -328,8 +326,8 @@ const Internals = () => {
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-center">
                                   <span className={`inline-flex items-center justify-center w-12 h-8 rounded-lg text-sm font-medium ${
-                                    test1 && test1 !== '*' && test1 !== ' ' 
-                                      ? 'bg-blue-100 text-blue-800 border border-blue-200' 
+                                    test1 && test1 !== '*' && test1 !== ' '
+                                      ? 'bg-blue-100 text-blue-800 border border-blue-200'
                                       : 'bg-gray-100 text-gray-500 border border-gray-200'
                                   }`}>
                                     {test1 && test1 !== '*' && test1 !== ' ' ? test1 : '-'}
@@ -337,8 +335,8 @@ const Internals = () => {
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-center">
                                   <span className={`inline-flex items-center justify-center w-12 h-8 rounded-lg text-sm font-medium ${
-                                    test2 && test2 !== '*' && test2 !== ' ' 
-                                      ? 'bg-purple-100 text-purple-800 border border-purple-200' 
+                                    test2 && test2 !== '*' && test2 !== ' '
+                                      ? 'bg-purple-100 text-purple-800 border border-purple-200'
                                       : 'bg-gray-100 text-gray-500 border border-gray-200'
                                   }`}>
                                     {test2 && test2 !== '*' && test2 !== ' ' ? test2 : '-'}
@@ -346,8 +344,8 @@ const Internals = () => {
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-center">
                                   <span className={`inline-flex items-center justify-center w-12 h-8 rounded-lg text-sm font-medium ${
-                                    final50 && final50 !== '*' && final50 !== ' ' 
-                                      ? 'bg-green-100 text-green-800 border border-green-200' 
+                                    final50 && final50 !== '*' && final50 !== ' '
+                                      ? 'bg-green-100 text-green-800 border border-green-200'
                                       : 'bg-gray-100 text-gray-500 border border-gray-200'
                                   }`}>
                                     {final50 && final50 !== '*' && final50 !== ' ' ? final50 : '-'}
@@ -355,8 +353,8 @@ const Internals = () => {
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-center">
                                   <span className={`inline-flex items-center justify-center w-12 h-8 rounded-lg text-sm font-medium ${
-                                    final40 && final40 !== '*' && final40 !== ' ' 
-                                      ? 'bg-orange-100 text-orange-800 border border-orange-200' 
+                                    final40 && final40 !== '*' && final40 !== ' '
+                                      ? 'bg-orange-100 text-orange-800 border border-orange-200'
                                       : 'bg-gray-100 text-gray-500 border border-gray-200'
                                   }`}>
                                     {final40 && final40 !== '*' && final40 !== ' ' ? final40 : '-'}

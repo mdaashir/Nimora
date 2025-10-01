@@ -9,7 +9,7 @@ const ExamCard = ({ exam }) => {
   const formatDate = (dateStr) => {
     try {
       if (!dateStr) return "Invalid Date";
-      
+
       // Handle DD-MM-YY format (expected from backend)
       const [day, month, year] = dateStr.split('-');
       if (day && month && year) {
@@ -17,27 +17,27 @@ const ExamCard = ({ exam }) => {
         if (isNaN(date.getTime())) {
           return dateStr; // Return original if invalid
         }
-        return date.toLocaleDateString('en-US', { 
-          weekday: 'long', 
-          year: 'numeric', 
-          month: 'long', 
-          day: 'numeric' 
+        return date.toLocaleDateString('en-US', {
+          weekday: 'long',
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
         });
       }
-      
+
       // Try other common formats
       const date = new Date(dateStr);
       if (!isNaN(date.getTime())) {
-        return date.toLocaleDateString('en-US', { 
-          weekday: 'long', 
-          year: 'numeric', 
-          month: 'long', 
-          day: 'numeric' 
+        return date.toLocaleDateString('en-US', {
+          weekday: 'long',
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
         });
       }
-      
+
       return dateStr; // Return original if parsing fails
-    } catch (e) {
+    } catch {
       return dateStr; // Return original if parsing fails
     }
   };
@@ -46,9 +46,9 @@ const ExamCard = ({ exam }) => {
   const getDaysRemaining = (dateStr) => {
     try {
       if (!dateStr) return "";
-      
+
       let examDate;
-      
+
       // Handle DD-MM-YY format (expected from backend)
       const [day, month, year] = dateStr.split('-');
       if (day && month && year) {
@@ -63,19 +63,19 @@ const ExamCard = ({ exam }) => {
           return "";
         }
       }
-      
+
       const today = new Date();
       today.setHours(0, 0, 0, 0); // Set to beginning of day
       examDate.setHours(0, 0, 0, 0); // Set to beginning of day
-      
+
       const diffTime = examDate - today;
       const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-      
+
       if (diffDays < 0) return "Past";
       if (diffDays === 0) return "Today";
       if (diffDays === 1) return "Tomorrow";
       return `${diffDays} days`;
-    } catch (e) {
+    } catch {
       return "";
     }
   };
@@ -84,9 +84,9 @@ const ExamCard = ({ exam }) => {
   const getStatusColor = (dateStr) => {
     try {
       if (!dateStr) return "bg-gray-100 text-gray-800";
-      
+
       let examDate;
-      
+
       // Handle DD-MM-YY format (expected from backend)
       const [day, month, year] = dateStr.split('-');
       if (day && month && year) {
@@ -101,19 +101,19 @@ const ExamCard = ({ exam }) => {
           return "bg-gray-100 text-gray-800";
         }
       }
-      
+
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       examDate.setHours(0, 0, 0, 0);
-      
+
       const diffTime = examDate - today;
       const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-      
+
       if (diffDays < 0) return "bg-gray-200 text-gray-700"; // Past
       if (diffDays <= 2) return "bg-red-100 text-red-800"; // Urgent (0-2 days)
       if (diffDays <= 7) return "bg-yellow-100 text-yellow-800"; // Soon (3-7 days)
       return "bg-green-100 text-green-800"; // Plenty of time (>7 days)
-    } catch (e) {
+    } catch {
       return "bg-gray-100 text-gray-800";
     }
   };
@@ -159,7 +159,7 @@ const Timetable = () => {
         setLoading(true)
         // Use the service function which checks stored data first
         const response = await getExamSchedule(rollNo, atob(password))
-        
+
         if (response && response.length > 0) {
           setExams(response)
         } else {
@@ -182,19 +182,19 @@ const Timetable = () => {
   useEffect(() => {
     // Push a duplicate entry to the history stack
     window.history.pushState(null, document.title, window.location.href);
-    
+
     // Handle the popstate event (when back button is clicked)
-    const handlePopState = (event) => {
+    const handlePopState = () => {
       // Push another entry to prevent going back
       window.history.pushState(null, document.title, window.location.href);
-      
+
       // Show a message indicating they should use the logout button
       alert("Please use the logout button to return to the login page.");
     };
-    
+
     // Add event listener for the popstate event
     window.addEventListener('popstate', handlePopState);
-    
+
     // Clean up event listener when component unmounts
     return () => {
       window.removeEventListener('popstate', handlePopState);
@@ -206,12 +206,12 @@ const Timetable = () => {
     try {
       const [dayA, monthA, yearA] = a.DATE.split('-');
       const [dayB, monthB, yearB] = b.DATE.split('-');
-      
+
       const dateA = new Date(`20${yearA}`, monthA-1, dayA);
       const dateB = new Date(`20${yearB}`, monthB-1, dayB);
-      
+
       return dateA - dateB;
-    } catch (e) {
+    } catch {
       return 0;
     }
   });
@@ -224,7 +224,7 @@ const Timetable = () => {
           <h2 className="text-xl font-semibold text-red-600 mb-4">Error</h2>
           <p className="text-gray-700 mb-6">Login credentials not found. Please log in again.</p>
           <div className="flex justify-center">
-            <button 
+            <button
               onClick={() => navigate('/')}
               className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-md hover:shadow-lg"
             >
@@ -243,7 +243,7 @@ const Timetable = () => {
           <Navbar />
           <div className="bg-white rounded-2xl shadow-xl p-4 md:p-6 hover:shadow-2xl transition-all duration-300">
             <h1 className="text-2xl font-bold text-blue-700 mb-2 border-b-2 border-blue-100 pb-2">Exam Schedule</h1>
-            
+
             {loading ? (
               <div className="flex justify-center items-center py-16">
                 <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-600"></div>
@@ -273,7 +273,7 @@ const Timetable = () => {
                     <span className="px-4 py-1.5 rounded-full text-sm font-medium bg-gray-200 text-gray-700 shadow-sm">Past</span>
                   </div>
                 </div>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-6">
                   {sortedExams.map((exam, index) => (
                     <ExamCard key={index} exam={exam} />
