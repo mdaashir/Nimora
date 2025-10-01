@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { getStudentAttendance, greetUser } from '../utils/attendanceService'
 import Footer from '../components/Footer'
+import { useAuth } from '../context/AuthContext'
 
 const Home = () => {
-  const location = useLocation()
   const navigate = useNavigate()
-  const { rollNo, password } = location.state || {}
+  const { auth, getDecodedPassword } = useAuth()
   const [loading, setLoading] = useState(true)
   const [greeting, setGreeting] = useState('')
   const [attendanceData, setAttendanceData] = useState([])
@@ -17,19 +17,19 @@ const Home = () => {
   useEffect(() => {
     // Push a duplicate entry to the history stack
     window.history.pushState(null, document.title, window.location.href);
-    
+
     // Handle the popstate event (when back button is clicked)
     const handlePopState = (event) => {
       // Push another entry to prevent going back
       window.history.pushState(null, document.title, window.location.href);
-      
+
       // Show a message indicating they should use the logout button
       alert("Please use the logout button to return to the login page.");
     };
-    
+
     // Add event listener for the popstate event
     window.addEventListener('popstate', handlePopState);
-    
+
     // Clean up event listener when component unmounts
     return () => {
       window.removeEventListener('popstate', handlePopState);
@@ -38,7 +38,7 @@ const Home = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (!rollNo || !password) {
+      if (!auth?.rollNo) {
         console.error('Login credentials not found. Please log in again.')
         setLoading(false)
         // Redirect to login page after a short delay
@@ -50,25 +50,28 @@ const Home = () => {
 
       try {
         setLoading(true)
-        
-        // Decode password from base64
-        const decodedPassword = atob(password)
-        
+
+        // Get decoded password from auth context
+        const decodedPassword = getDecodedPassword()
+        if (!decodedPassword) {
+          throw new Error('Invalid credentials')
+        }
+
         // Get user greeting first to verify credentials
-        const userGreeting = await greetUser(rollNo, decodedPassword)
+        const userGreeting = await greetUser(auth.rollNo, decodedPassword)
         setGreeting(userGreeting)
 
         // Only fetch attendance data if greeting was successful
         if (userGreeting) {
-          const data = await getStudentAttendance(rollNo, decodedPassword)
+          const data = await getStudentAttendance(auth.rollNo, decodedPassword)
           setAttendanceData(data)
-  
+
           // Calculate affordable leaves with default percentage
           calculateCombinedData(data, customPercentage)
         }
       } catch (err) {
         console.error('Error loading data:', err)
-        
+
         // If error is about invalid credentials, redirect to login
         if (err.message && err.message.includes('Invalid credentials')) {
           setTimeout(() => {
@@ -81,7 +84,7 @@ const Home = () => {
     }
 
     fetchData()
-  }, [rollNo, password, navigate])
+  }, [auth, navigate, getDecodedPassword])
 
   const calculateCombinedData = (data, percentage) => {
     if (!data || data.length === 0) return
@@ -90,7 +93,7 @@ const Home = () => {
       const classesTotal = parseInt(course[1])
       const classesPresent = parseInt(course[4])
       const leaves = calculateIndividualLeaves(classesPresent, classesTotal, percentage)
-      
+
       return {
         courseCode: course[0],
         totalClasses: course[1],
@@ -131,7 +134,7 @@ const Home = () => {
         i += 1
         iterations += 1
       }
-      
+
       // If we hit the max iterations, just return a reasonable value
       if (iterations >= MAX_ITERATIONS) {
         return Math.floor(-MAX_ITERATIONS / 10);
@@ -144,7 +147,7 @@ const Home = () => {
         i += 1
         iterations += 1
       }
-      
+
       // If we hit the max iterations, cap the result
       if (iterations >= MAX_ITERATIONS) {
         return Math.floor(MAX_ITERATIONS / 10);
@@ -157,11 +160,11 @@ const Home = () => {
   const handlePercentageChange = (e) => {
     const newPercentage = parseInt(e.target.value)
     setCustomPercentage(newPercentage)
-    
+
     // Only recalculate if not already calculating
     calculateCombinedData(attendanceData, newPercentage)
   }
-  
+
   const handleLogout = () => {
     navigate('/')
   }
@@ -200,7 +203,7 @@ const Home = () => {
             <p className="text-gray-600 text-base">Welcome to your attendance dashboard.</p>
           </div>
         </div>
-        
+
         {greeting.includes("Birthday") && (
           <div className="p-4 mt-4 bg-gradient-to-r from-amber-50 to-yellow-50 rounded-lg border border-amber-200/50 shadow-md">
             <div className="flex items-center justify-center">
@@ -226,7 +229,7 @@ const Home = () => {
               </div>
               <h2 className="text-xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">Attendance Overview</h2>
             </div>
-            
+
             <div className="mt-3 p-3 bg-gradient-to-br from-slate-50 to-gray-50 rounded-lg border border-gray-200/50 shadow-inner">
               <div className="w-full flex flex-col">
                 <div className="flex items-center justify-between w-full mb-3">
@@ -235,7 +238,7 @@ const Home = () => {
                       <span className="text-white font-bold text-xs">%</span>
                     </div>
                     <label htmlFor="customPercentage" className="text-base font-semibold text-gray-700">
-                      Maintenance Target: 
+                      Maintenance Target:
                     </label>
                   </div>
                   <div className="flex items-center">
@@ -278,7 +281,7 @@ const Home = () => {
               </div>
             </div>
           </div>
-          
+
           <div className="rounded-2xl border border-gray-200 shadow-xl overflow-hidden overflow-x-auto hover:shadow-2xl transition-all duration-300 bg-white">
             <div className="min-w-full">
               {/* Header Row - hidden on small screens, visible from md up */}
@@ -292,23 +295,23 @@ const Home = () => {
                   Affordable Leaves
                 </div>
               </div>
-              
+
               {/* Data Rows with horizontal grid styling */}
               <div>
                 {combinedData.map((course, index) => {
                   // Determine color based on affordable leaves
-                  const colorClass = course.affordableLeaves >= 0 
-                    ? "hover:border-l-4 hover:border-emerald-500 hover:bg-emerald-50/50" 
+                  const colorClass = course.affordableLeaves >= 0
+                    ? "hover:border-l-4 hover:border-emerald-500 hover:bg-emerald-50/50"
                     : "hover:border-l-4 hover:border-amber-500 hover:bg-amber-50/50";
-                  
+
                   // Determine background color based on index for zebra striping
-                  const bgClass = index % 2 === 0 
-                    ? (parseInt(course.percentage) < 75 ? "bg-amber-50/30" : "bg-white") 
+                  const bgClass = index % 2 === 0
+                    ? (parseInt(course.percentage) < 75 ? "bg-amber-50/30" : "bg-white")
                     : (parseInt(course.percentage) < 75 ? "bg-amber-50/20" : "bg-gray-50/50");
-                  
+
                   // This is the last row
                   const isLastRow = index === combinedData.length - 1;
-                  
+
                   return (
                     <div key={index}>
                       {/* Mobile view - vertical card layout */}
@@ -329,7 +332,7 @@ const Home = () => {
                               </div>
                             )}
                           </div>
-                          
+
                           <div className="mb-3 bg-gray-50 rounded-lg p-3 shadow-inner">
                             <div className="flex justify-between items-center mb-1">
                               <span className="text-gray-600 text-sm font-medium">Current Attendance:</span>
@@ -338,7 +341,7 @@ const Home = () => {
                               </span>
                             </div>
                             <div className="mt-1 bg-gray-200 rounded-full h-2 shadow-inner border border-gray-300">
-                              <div 
+                              <div
                                 className={`${parseInt(course.percentage) < 75 ? "bg-gradient-to-r from-amber-400 to-orange-500" : "bg-gradient-to-r from-emerald-400 to-teal-500"} h-2 rounded-full shadow-sm border border-white/50`}
                                 style={{ width: `${course.percentage}%` }}>
                               </div>
@@ -349,28 +352,28 @@ const Home = () => {
                               <span className="text-gray-500 font-medium">100%</span>
                             </div>
                           </div>
-                          
+
                           <div className="grid grid-cols-2 gap-3">
                             <div className="bg-gradient-to-br from-slate-50 to-gray-100 rounded-lg p-2 text-center shadow-sm border border-gray-200">
                               <span className="text-xs text-gray-600 font-medium block mb-0.5">Total Classes</span>
                               <span className="text-lg font-bold text-slate-700">{course.totalClasses}</span>
                             </div>
-                            
+
                             <div className="bg-gradient-to-br from-emerald-50 to-teal-100 rounded-lg p-2 text-center shadow-sm border border-emerald-200">
                               <span className="text-xs text-gray-600 font-medium block mb-0.5">Present</span>
                               <span className="text-lg font-bold text-emerald-700">{course.present}</span>
                             </div>
-                            
+
                             <div className="bg-gradient-to-br from-amber-50 to-orange-100 rounded-lg p-2 text-center shadow-sm border border-amber-200">
                               <span className="text-xs text-gray-600 font-medium block mb-0.5">Absent</span>
                               <span className="text-lg font-bold text-amber-700">{course.absent}</span>
                             </div>
-                            
+
                             <div className={`bg-gradient-to-br ${course.affordableLeaves >= 0 ? "from-emerald-50 to-teal-100 border-emerald-200" : "from-amber-50 to-orange-100 border-amber-200"} rounded-lg p-2 text-center shadow-sm border`}>
                               <span className="text-xs text-gray-600 font-medium block mb-0.5">Leaves</span>
                                 <span className={`text-lg font-bold ${course.affordableLeaves >= 0 ? "text-emerald-700" : "text-amber-700"} flex items-center justify-center`}>
                                   {course.affordableLeaves >= 0 ? course.affordableLeaves : Math.abs(course.affordableLeaves)}
-                                  {course.affordableLeaves < 0 && 
+                                  {course.affordableLeaves < 0 &&
                                     <span className="ml-1 text-xs bg-amber-200 text-amber-800 px-1.5 py-0.5 rounded-md shadow-sm">attend</span>
                                   }
                                 </span>
@@ -378,10 +381,10 @@ const Home = () => {
                           </div>
                         </div>
                       </div>
-                      
+
                       {/* Desktop view - row layout */}
-                      <div 
-                        className={`hidden md:grid md:grid-cols-6 ${bgClass} 
+                      <div
+                        className={`hidden md:grid md:grid-cols-6 ${bgClass}
                           ${colorClass}
                           ${!isLastRow ? 'border-b border-gray-200' : ''}
                           transition-all duration-300 ease-in-out cursor-pointer`}
@@ -396,7 +399,7 @@ const Home = () => {
                         <div className={`px-4 py-3 text-base text-center font-medium ${course.affordableLeaves < 0 ? "text-amber-600" : "text-emerald-600"}`}>
                           <span className={`inline-flex items-center justify-center bg-opacity-60 rounded-lg px-2 py-0.5 text-sm ${course.affordableLeaves < 0 ? 'bg-amber-100 border border-amber-200' : 'bg-emerald-100 border border-emerald-200'}`}>
                             {course.affordableLeaves >= 0 ? course.affordableLeaves : Math.abs(course.affordableLeaves)}
-                            {course.affordableLeaves < 0 && 
+                            {course.affordableLeaves < 0 &&
                               <span className="ml-1 text-sm bg-amber-200 text-amber-800 px-1.5 py-0.5 rounded-full">attend</span>
                             }
                           </span>
@@ -410,11 +413,11 @@ const Home = () => {
           </div>
         </div>
           )}
-          
+
           {combinedData.length === 0 && !loading && (
             <div className="bg-white rounded-2xl shadow-xl p-4 md:p-6 hover:shadow-2xl transition-all duration-300">
               <h1 className="text-2xl font-bold text-blue-700 mb-2 border-b-2 border-blue-100 pb-2">Attendance Overview</h1>
-              
+
               <div className="text-center py-12 bg-blue-50 rounded-xl shadow-inner px-4">
                 <div className="mx-auto w-20 h-20 mb-6 text-blue-400">
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">

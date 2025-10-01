@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import Footer from './Footer'
 import { securityUtils } from '../utils/securityUtils'
 import { loginUser } from '../utils/attendanceService'
+import { useAuth } from '../context/AuthContext'
 
 const Login = () => {
     const [rollNo, setRollNo] = useState('')
@@ -14,6 +15,14 @@ const Login = () => {
     const [isInputFocused, setIsInputFocused] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
     const navigate = useNavigate()
+    const { login: authLogin, isAuthenticated } = useAuth()
+
+    // Redirect if already authenticated
+    useEffect(() => {
+        if (isAuthenticated) {
+            navigate('/Home', { replace: true })
+        }
+    }, [isAuthenticated, navigate])
 
     // Add effect to handle viewport adjustments on mobile
     useEffect(() => {
@@ -21,7 +30,7 @@ const Login = () => {
         const updateViewportHeight = () => {
             // Set a custom property with the viewport height
             document.documentElement.style.setProperty(
-                '--vh', 
+                '--vh',
                 `${window.innerHeight * 0.01}px`
             );
         };
@@ -31,7 +40,7 @@ const Login = () => {
 
         // Add event listener for resize
         window.addEventListener('resize', updateViewportHeight);
-        
+
         // Clean up
         return () => window.removeEventListener('resize', updateViewportHeight);
     }, []);
@@ -98,14 +107,12 @@ const Login = () => {
             const result = await loginUser(sanitizedRollNo, password)
 
             if (result) {
-                // Navigate to home with credentials
-                navigate('/Home', {
-                    state: {
-                        rollNo: sanitizedRollNo,
-                        password: btoa(password), // Keep base64 for backward compatibility
-                        fromLogin: true
-                    }
-                })
+                // Store credentials in auth context
+                const encodedPassword = btoa(password)
+                authLogin(sanitizedRollNo, encodedPassword)
+
+                // Navigate to home
+                navigate('/Home', { replace: true })
             }
         } catch (error) {
             setError(error.message || 'Login failed. Please try again.')
@@ -113,7 +120,7 @@ const Login = () => {
             setIsLoading(false)
         }
     }
-    
+
     // Handle Enter key press
     const handleKeyDown = (e) => {
         if (e.key === 'Enter') {
@@ -169,25 +176,25 @@ const Login = () => {
                             disabled={isLoading}
                         />
                         {showPassword ? (
-                            <EyeOff 
-                                className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer hover:text-white transition-colors duration-300" 
-                                onClick={() => setShowPassword(!showPassword)} 
+                            <EyeOff
+                                className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer hover:text-white transition-colors duration-300"
+                                onClick={() => setShowPassword(!showPassword)}
                             />
                         ) : (
-                            <Eye 
-                                className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer hover:text-white transition-colors duration-300" 
-                                onClick={() => setShowPassword(!showPassword)} 
+                            <Eye
+                                className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer hover:text-white transition-colors duration-300"
+                                onClick={() => setShowPassword(!showPassword)}
                             />
                         )}
                     </div>
-                    
+
                     <div className="flex items-center justify-center text-xs text-gray-400 bg-blue-900/30 p-2 rounded-md border border-blue-800/50">
                         <Shield className="h-3 w-3 text-blue-400 mr-1" />
                         <span>Password is encrypted</span>
                     </div>
-                    
+
                     <div>
-                        <button 
+                        <button
                             className="flex w-full justify-center rounded-lg bg-[#1173d4] px-4 py-3.5 text-base font-semibold leading-6 text-white shadow-sm hover:bg-gradient-to-r hover:from-[#1173d4] hover:to-[#0f6ac0] hover:scale-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1173d4] transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:scale-100"
                             type="submit"
                             disabled={isLoading}
@@ -205,7 +212,7 @@ const Login = () => {
                 </form>
                 {error && <p className="text-red-400 text-sm text-center">{error}</p>}
             </div>
-            
+
             {/* Bottom Bar */}
             <div className="absolute bottom-0 left-0 right-0 bg-black/50 backdrop-blur-sm border-t border-gray-700/50">
                 <div className="max-w-md mx-auto px-8 py-4">

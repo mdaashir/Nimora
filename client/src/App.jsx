@@ -1,6 +1,6 @@
 import React from 'react'
 import './App.css'
-import {BrowserRouter, Routes, Route} from 'react-router-dom'
+import {BrowserRouter, Routes, Route, Navigate} from 'react-router-dom'
 import Home from './pages/homePage'
 import Feedback from './pages/feedbackPage'
 import TimeTable from './pages/timetablePage'
@@ -9,6 +9,25 @@ import Internals from './pages/internalsPage'
 import Login from './components/Login'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
+import { AuthProvider, useAuth } from './context/AuthContext'
+
+// Protected Route Component
+const ProtectedRoute = ({ children }) => {
+  const { isAuthenticated, loading } = useAuth()
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-100">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading...</p>
+        </div>
+      </div>
+    )
+  }
+
+  return isAuthenticated ? children : <Navigate to="/" replace />
+}
 
 // Layout component with fixed navbar and footer
 const PageLayout = ({ children }) => {
@@ -28,34 +47,46 @@ const PageLayout = ({ children }) => {
 function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path='/' element={<Login />} />
-        <Route path='/Home' element={
-          <PageLayout>
-            <Home />
-          </PageLayout>
-        } />
-        <Route path='/feedback' element={
-          <PageLayout>
-            <Feedback />
-          </PageLayout>
-        } />
-        <Route path='/timetable' element={
-          <PageLayout>
-            <TimeTable />
-          </PageLayout>
-        } />
-        <Route path='/cgpa' element={
-          <PageLayout>
-            <Cgpa />
-          </PageLayout>
-        } />
-        <Route path='/internals' element={
-          <PageLayout>
-            <Internals />
-          </PageLayout>
-        } />
-      </Routes>
+      <AuthProvider>
+        <Routes>
+          <Route path='/' element={<Login />} />
+          <Route path='/Home' element={
+            <ProtectedRoute>
+              <PageLayout>
+                <Home />
+              </PageLayout>
+            </ProtectedRoute>
+          } />
+          <Route path='/feedback' element={
+            <ProtectedRoute>
+              <PageLayout>
+                <Feedback />
+              </PageLayout>
+            </ProtectedRoute>
+          } />
+          <Route path='/timetable' element={
+            <ProtectedRoute>
+              <PageLayout>
+                <TimeTable />
+              </PageLayout>
+            </ProtectedRoute>
+          } />
+          <Route path='/cgpa' element={
+            <ProtectedRoute>
+              <PageLayout>
+                <Cgpa />
+              </PageLayout>
+            </ProtectedRoute>
+          } />
+          <Route path='/internals' element={
+            <ProtectedRoute>
+              <PageLayout>
+                <Internals />
+              </PageLayout>
+            </ProtectedRoute>
+          } />
+        </Routes>
+      </AuthProvider>
     </BrowserRouter>
   )
 }

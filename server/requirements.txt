@@ -1,6 +1,7 @@
 fastapi
-uvicorn
+uvicorn[standard]
 pydantic
+pydantic-settings
 requests
 beautifulsoup4
 pandas
@@ -9,4 +10,7 @@ lxml
 pytz
 httpx
 selenium
-webdriver-manager 
+webdriver-manager
+redis
+slowapi
+dependency-injector
