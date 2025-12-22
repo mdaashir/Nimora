@@ -112,9 +112,10 @@ async def log_requests(request: Request, call_next):
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:3000",  # Development frontend
-        "https://nimora.duvarakesh.xyz",  # Production frontend
-        "*"  # Allow all for development/testing
+        "http://localhost:3000",
+        "https://skipp.duvarakesh.tech",
+        "https://skipp.dktech.app"
+        "https://skipp-any.vercel.app"
     ],
     allow_credentials=True,
     allow_methods=["*"],
