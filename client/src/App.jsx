@@ -4,6 +4,7 @@ import {BrowserRouter, Routes, Route} from 'react-router-dom'
 import Home from './pages/homePage'
 import Feedback from './pages/feedbackPage'
 import TimeTable from './pages/timetablePage'
+import ClassTimetable from './pages/classTimetablePage'
 import Cgpa from './pages/cgpaPage'
 import Internals from './pages/internalsPage'
 import Login from './components/Login'
@@ -43,6 +44,11 @@ function App() {
         <Route path='/timetable' element={
           <PageLayout>
             <TimeTable />
+          </PageLayout>
+        } />
+        <Route path='/class-timetable' element={
+          <PageLayout>
+            <ClassTimetable />
           </PageLayout>
         } />
         <Route path='/cgpa' element={

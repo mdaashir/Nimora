@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { Home as HomeIcon, Calendar, BarChart, MessageSquare, LogOut, Menu, X, ClipboardList } from 'lucide-react'
+import { Home as HomeIcon, Calendar, BarChart, MessageSquare, LogOut, Menu, X, ClipboardList, Clock } from 'lucide-react'
 import { clearCredentials } from '../utils/attendanceService'
 
 const Navbar = () => {
@@ -9,13 +9,22 @@ const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   
   // Define navigation items
-  const navItems = [
+  const baseNavItems = [
     { path: '/Home', name: 'Home', icon: HomeIcon },
     { path: '/internals', name: 'Internal Marks', icon: ClipboardList },
     { path: '/timetable', name: 'Time Table', icon: Calendar },
     { path: '/cgpa', name: 'CGPA', icon: BarChart },
     { path: '/feedback', name: 'Feedback', icon: MessageSquare },
   ]
+  
+  // Conditionally add Class Time Table for roll numbers starting with 22pt (case insensitive)
+  const navItems = location.state?.rollNo?.toLowerCase().startsWith('22pt') 
+    ? [
+        baseNavItems[0], // Home
+        { path: '/class-timetable', name: 'Class Time Table', icon: Clock },
+        ...baseNavItems.slice(1) // Rest of the items
+      ]
+    : baseNavItems
   
   const handleLogout = () => {
     // Clear stored credentials
