@@ -115,7 +115,8 @@ app.add_middleware(
         "http://localhost:3000",
         "https://skipp.duvarakesh.tech",
         "https://skipp.dktech.app"
-        "https://skipp-any.vercel.app"
+        "https://skipp-any.vercel.app",
+        "*"
     ],
     allow_credentials=True,
     allow_methods=["*"],
