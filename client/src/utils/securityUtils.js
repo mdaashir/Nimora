@@ -12,13 +12,7 @@ export const securityUtils = {
     // Basic validation - adjust regex based on your roll number format
     return /^[A-Za-z0-9]{6,20}$/.test(rollNo);
   },
-
-  // Validate password strength
-  validatePassword: (password) => {
-    if (!password || typeof password !== 'string') return false;
-    return password.length >= 6; // Minimum length check
-  },
-
+  
   // Check if running on HTTPS
   isSecure: () => {
     return typeof window !== 'undefined' &&
