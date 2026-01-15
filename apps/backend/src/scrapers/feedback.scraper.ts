@@ -82,7 +82,7 @@ export class FeedbackScraper {
           'div.bottom-0',
           (el) => el.textContent,
         );
-        const questions = parseInt(questionsText.split(' ').pop());
+        const questions = parseInt(questionsText?.split(' ').pop() || '0');
 
         // Fill out the feedback
         for (let q = 0; q < questions; q++) {
@@ -94,7 +94,7 @@ export class FeedbackScraper {
 
             // Click next button
             await page.click('.carousel-control-next');
-            await page.waitForTimeout(500);
+            await new Promise(resolve => setTimeout(resolve, 500));
           } catch (error) {
             this.logger.warn(`Error on question ${q + 1}:`, error);
             continue;
@@ -103,7 +103,7 @@ export class FeedbackScraper {
 
         // Go back to course list
         await page.click('.overlay');
-        await page.waitForTimeout(1000);
+        await new Promise(resolve => setTimeout(resolve, 1000));
       }
 
       return {
@@ -162,18 +162,18 @@ export class FeedbackScraper {
 
           await page.waitForSelector(starSelector, { timeout: 5000 });
           await page.click(starSelector);
-          await page.waitForTimeout(300);
+          await new Promise(resolve => setTimeout(resolve, 300));
         }
 
         // Submit this staff's feedback
         await page.click('#btnSave');
         await page.waitForSelector('img.img-fluid', { timeout: 5000 });
-        await page.waitForTimeout(1000);
+        await new Promise(resolve => setTimeout(resolve, 1000));
       }
 
       // Final submit button
       await page.click('#btnFinalSubmit');
-      await page.waitForTimeout(2000);
+      await new Promise(resolve => setTimeout(resolve, 2000));
 
       return {
         status: 'success',
@@ -250,7 +250,7 @@ export class FeedbackScraper {
 
       // Click the desired feedback
       await feedbacks[index].click();
-      await page.waitForTimeout(2000);
+      await new Promise(resolve => setTimeout(resolve, 2000));
 
       // Process the appropriate feedback form
       let result: FeedbackResult;
