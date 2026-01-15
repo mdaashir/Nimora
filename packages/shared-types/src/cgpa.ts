@@ -4,6 +4,7 @@ export interface SemesterGPA {
   gpa: number;
   cgpa: number;
   credits: number;
+  isPending?: boolean;
 }
 
 export interface CourseGrade {
@@ -12,6 +13,7 @@ export interface CourseGrade {
   credits: number;
   grade: string;
   gradePoint: number;
+  semester?: number;
 }
 
 export interface CGPAResponse {

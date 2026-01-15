@@ -3,11 +3,19 @@ export interface ExamSchedule {
   courseCode: string;
   courseName: string;
   date: string;
-  day: string;
   time: string;
-  session: 'FN' | 'AN';
+  venue?: string;
+  day?: string;
+  session?: 'FN' | 'AN';
 }
 
+export interface ExamScheduleResponse {
+  rollNo: string;
+  exams: ExamSchedule[];
+  lastUpdated: Date;
+}
+
+// Legacy interface for compatibility
 export interface TimetableResponse {
   studentName: string;
   rollNo: string;
@@ -15,25 +23,24 @@ export interface TimetableResponse {
   lastUpdated: Date;
 }
 
-export interface ClassSchedule {
-  day: string;
-  periods: ClassPeriod[];
-}
-
-export interface ClassPeriod {
+export interface TimetableSlot {
   period: number;
   startTime: string;
   endTime: string;
   courseCode: string;
   courseName: string;
-  faculty: string;
-  room: string;
+  faculty?: string;
+  room?: string;
+}
+
+export interface ClassSchedule {
+  day: string;
+  periods: TimetableSlot[];
 }
 
 export interface ClassTimetableResponse {
-  studentName: string;
   rollNo: string;
-  schedule: ClassSchedule[];
+  timetable: Record<string, TimetableSlot[]>;
   lastUpdated: Date;
 }
 

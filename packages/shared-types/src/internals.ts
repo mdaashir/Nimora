@@ -1,5 +1,21 @@
 // Internals types
 export interface InternalMark {
+  testName: string;
+  obtainedMarks: number;
+  maxMarks: number;
+  percentage: number;
+}
+
+export interface CourseInternal {
+  courseCode: string;
+  courseName: string;
+  marks: InternalMark[];
+  totalObtained: number;
+  totalMax: number;
+}
+
+// Legacy interface for compatibility
+export interface LegacyInternalMark {
   courseCode: string;
   courseName: string;
   internal1: number | null;
@@ -12,10 +28,8 @@ export interface InternalMark {
 }
 
 export interface InternalsResponse {
-  studentName: string;
   rollNo: string;
-  semester: number;
-  marks: InternalMark[];
+  courses: CourseInternal[];
   lastUpdated: Date;
 }
 
