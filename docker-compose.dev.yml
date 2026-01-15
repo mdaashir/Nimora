@@ -14,7 +14,7 @@ services:
   api:
     build:
       context: .
-      dockerfile: apps/backend/Dockerfile.dev
+      dockerfile: server/Dockerfile.dev
     container_name: nimora-api-dev
     environment:
       NODE_ENV: development
@@ -28,7 +28,7 @@ services:
       ECAMPUS_BASE_URL: ${ECAMPUS_BASE_URL:-https://ecampus.psgtech.ac.in}
       ENCRYPTION_KEY: ${ENCRYPTION_KEY:-dev_encryption_key_32chars!}
     volumes:
-      - ./apps/backend/src:/app/apps/backend/src:ro
+      - ./server/src:/app/server/src:ro
       - ./packages:/app/packages:ro
     ports:
       - '3001:3001'
@@ -39,13 +39,13 @@ services:
   frontend:
     build:
       context: .
-      dockerfile: apps/frontend/Dockerfile.dev
+      dockerfile: client/Dockerfile.dev
     container_name: nimora-frontend-dev
     environment:
       NODE_ENV: development
       NEXT_PUBLIC_API_URL: http://localhost:3001/api
     volumes:
-      - ./apps/frontend/src:/app/apps/frontend/src:ro
+      - ./client/src:/app/client/src:ro
       - ./packages:/app/packages:ro
     ports:
       - '3000:3000'

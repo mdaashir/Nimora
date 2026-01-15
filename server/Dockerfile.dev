@@ -24,7 +24,7 @@ ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
 
 # Copy package files
 COPY package.json pnpm-lock.yaml* pnpm-workspace.yaml ./
-COPY apps/backend/package.json ./apps/backend/
+COPY server/package.json ./server/
 COPY packages/shared-types/package.json ./packages/shared-types/
 COPY packages/shared-utils/package.json ./packages/shared-utils/
 
@@ -32,11 +32,11 @@ COPY packages/shared-utils/package.json ./packages/shared-utils/
 RUN pnpm install
 
 # Copy source code
-COPY apps/backend ./apps/backend
+COPY server ./server
 COPY packages ./packages
 
 # Generate Prisma client
-WORKDIR /app/apps/backend
+WORKDIR /app/server
 RUN npx prisma generate
 
 # Expose ports

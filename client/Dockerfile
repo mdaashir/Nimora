@@ -8,7 +8,7 @@ RUN corepack enable && corepack prepare pnpm@9.15.0 --activate
 
 # Copy package files
 COPY package.json pnpm-lock.yaml* pnpm-workspace.yaml ./
-COPY apps/frontend/package.json ./apps/frontend/
+COPY client/package.json ./client/
 COPY packages/shared-types/package.json ./packages/shared-types/
 COPY packages/shared-utils/package.json ./packages/shared-utils/
 
@@ -16,11 +16,11 @@ COPY packages/shared-utils/package.json ./packages/shared-utils/
 RUN pnpm install --frozen-lockfile
 
 # Copy source code
-COPY apps/frontend ./apps/frontend
+COPY client ./client
 COPY packages ./packages
 
 # Build the application
-WORKDIR /app/apps/frontend
+WORKDIR /app/client
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN pnpm build
 
@@ -38,9 +38,9 @@ RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
 # Copy built application
-COPY --from=builder /app/apps/frontend/public ./public
-COPY --from=builder --chown=nextjs:nodejs /app/apps/frontend/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/apps/frontend/.next/static ./.next/static
+COPY --from=builder /app/client/public ./public
+COPY --from=builder --chown=nextjs:nodejs /app/client/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/client/.next/static ./.next/static
 
 USER nextjs
 

@@ -44,7 +44,7 @@ services:
   api:
     build:
       context: .
-      dockerfile: apps/backend/Dockerfile
+      dockerfile: server/Dockerfile
     container_name: nimora-api
     restart: unless-stopped
     environment:
@@ -78,7 +78,7 @@ services:
   frontend:
     build:
       context: .
-      dockerfile: apps/frontend/Dockerfile
+      dockerfile: client/Dockerfile
       args:
         NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:3001/api}
     container_name: nimora-frontend

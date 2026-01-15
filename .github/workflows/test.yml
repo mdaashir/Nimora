@@ -70,7 +70,7 @@ jobs:
           node-version: 20
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: cd apps/backend && npx prisma generate
+      - run: cd server && npx prisma generate
       - run: pnpm test:backend
         env:
           DATABASE_URL: postgresql://test:test@localhost:5432/nimora_test

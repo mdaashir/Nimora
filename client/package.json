@@ -1,5 +1,5 @@
 {
-  "name": "@nimora/frontend",
+  "name": "@nimora/client",
   "version": "2.0.0",
   "private": true,
   "scripts": {

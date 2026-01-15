@@ -8,7 +8,7 @@ RUN corepack enable && corepack prepare pnpm@9.15.0 --activate
 
 # Copy package files
 COPY package.json pnpm-lock.yaml* pnpm-workspace.yaml ./
-COPY apps/backend/package.json ./apps/backend/
+COPY server/package.json ./server/
 COPY packages/shared-types/package.json ./packages/shared-types/
 COPY packages/shared-utils/package.json ./packages/shared-utils/
 
@@ -16,11 +16,11 @@ COPY packages/shared-utils/package.json ./packages/shared-utils/
 RUN pnpm install --frozen-lockfile
 
 # Copy source code
-COPY apps/backend ./apps/backend
+COPY server ./server
 COPY packages ./packages
 
 # Generate Prisma client
-WORKDIR /app/apps/backend
+WORKDIR /app/server
 RUN npx prisma generate
 
 # Build the application
@@ -51,11 +51,11 @@ ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
 
 # Copy built application
-COPY --from=builder /app/apps/backend/dist ./dist
-COPY --from=builder /app/apps/backend/package.json ./
-COPY --from=builder /app/apps/backend/prisma ./prisma
+COPY --from=builder /app/server/dist ./dist
+COPY --from=builder /app/server/package.json ./
+COPY --from=builder /app/server/prisma ./prisma
 COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/apps/backend/node_modules ./apps/backend/node_modules
+COPY --from=builder /app/server/node_modules ./server/node_modules
 
 # Create non-root user
 RUN addgroup --system --gid 1001 nodejs

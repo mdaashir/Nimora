@@ -8,7 +8,7 @@ RUN corepack enable && corepack prepare pnpm@9.15.0 --activate
 
 # Copy package files
 COPY package.json pnpm-lock.yaml* pnpm-workspace.yaml ./
-COPY apps/frontend/package.json ./apps/frontend/
+COPY client/package.json ./client/
 COPY packages/shared-types/package.json ./packages/shared-types/
 COPY packages/shared-utils/package.json ./packages/shared-utils/
 
@@ -16,10 +16,10 @@ COPY packages/shared-utils/package.json ./packages/shared-utils/
 RUN pnpm install
 
 # Copy source code
-COPY apps/frontend ./apps/frontend
+COPY client ./client
 COPY packages ./packages
 
-WORKDIR /app/apps/frontend
+WORKDIR /app/client
 
 # Expose port
 EXPOSE 3000
