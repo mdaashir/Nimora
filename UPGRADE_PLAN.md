@@ -23,99 +23,99 @@ Transform Nimora from Python/FastAPI + React into a unified full-stack JavaScrip
 
 - [x] Create `upgrade` branch
 - [x] Create implementation plan (this file)
-- [ ] Setup monorepo structure with pnpm workspaces
-- [ ] Create shared-types package
-- [ ] Create shared-utils package
-- [ ] Setup root configuration files
+- [x] Setup monorepo structure with pnpm workspaces
+- [x] Create shared-types package
+- [x] Create shared-utils package
+- [x] Setup root configuration files
 
 ### Phase 1: Backend Modernization (NestJS)
 
-- [ ] Initialize NestJS application
-- [ ] Setup Prisma ORM
-- [ ] Create database schema
-- [ ] Implement Config module
-- [ ] Implement Auth module
-  - [ ] JWT strategy
-  - [ ] Google OAuth strategy
-  - [ ] Guards and decorators
-- [ ] Implement User module
-- [ ] Implement Attendance module
-- [ ] Implement CGPA module
-- [ ] Implement Timetable module
-- [ ] Implement Internals module
-- [ ] Implement Feedback module
-- [ ] Setup global error handling
-- [ ] Setup request validation
-- [ ] Setup API documentation (Swagger)
+- [x] Initialize NestJS application
+- [x] Setup Prisma ORM
+- [x] Create database schema
+- [x] Implement Config module
+- [x] Implement Auth module
+  - [x] JWT strategy
+  - [x] Google OAuth strategy
+  - [x] Guards and decorators
+- [x] Implement User module
+- [x] Implement Attendance module
+- [x] Implement CGPA module
+- [x] Implement Timetable module
+- [x] Implement Internals module
+- [x] Implement Feedback module
+- [x] Setup global error handling
+- [x] Setup request validation
+- [x] Setup API documentation (Swagger)
 
 ### Phase 2: Scraping Service (Puppeteer)
 
-- [ ] Setup Puppeteer configuration
-- [ ] Implement eCampus authentication scraper
-- [ ] Implement Attendance scraper
-- [ ] Implement CGPA scraper
-- [ ] Implement Timetable scraper
-- [ ] Implement Internals scraper
+- [x] Setup Puppeteer configuration
+- [x] Implement eCampus authentication scraper
+- [x] Implement Attendance scraper
+- [x] Implement CGPA scraper
+- [x] Implement Timetable scraper
+- [x] Implement Internals scraper
 - [ ] Implement Feedback automation scraper
-- [ ] Add caching layer with Redis
-- [ ] Implement credential encryption service
+- [x] Add caching layer with Redis
+- [x] Implement credential encryption service
 
 ### Phase 3: Frontend Modernization (Next.js)
 
-- [ ] Initialize Next.js application
-- [ ] Setup Tailwind CSS v4
-- [ ] Install and configure shadcn/ui
-- [ ] Setup React Query
-- [ ] Setup API client (Axios)
-- [ ] Implement feature-based folder structure
-- [ ] Create UI components
-  - [ ] Button, Card, Input, Form components
-  - [ ] Navbar, Footer, Layout components
-  - [ ] Loading and Error components
-- [ ] Implement Auth pages
-  - [ ] Login page with Google OAuth
-  - [ ] Protected route middleware
-- [ ] Implement Attendance feature
-  - [ ] API hook
-  - [ ] Components
-  - [ ] Page
-- [ ] Implement CGPA feature
-- [ ] Implement Timetable feature
-- [ ] Implement Internals feature
-- [ ] Implement Feedback feature
-- [ ] Implement Home/Dashboard page
+- [x] Initialize Next.js application
+- [x] Setup Tailwind CSS v4
+- [x] Install and configure shadcn/ui
+- [x] Setup React Query
+- [x] Setup API client (Axios)
+- [x] Implement feature-based folder structure
+- [x] Create UI components
+  - [x] Button, Card, Input, Form components
+  - [x] Navbar, Footer, Layout components
+  - [x] Loading and Error components
+- [x] Implement Auth pages
+  - [x] Login page with Google OAuth
+  - [x] Protected route middleware
+- [x] Implement Attendance feature
+  - [x] API hook
+  - [x] Components
+  - [x] Page
+- [x] Implement CGPA feature
+- [x] Implement Timetable feature
+- [x] Implement Internals feature
+- [x] Implement Feedback feature
+- [x] Implement Home/Dashboard page
 - [ ] Add Error Boundaries
 - [ ] Add toast notifications
 
 ### Phase 4: Database & Caching
 
-- [ ] Design Prisma schema
-- [ ] Create User model
-- [ ] Create Attendance cache model
-- [ ] Create CGPA cache model
-- [ ] Setup Redis connection
-- [ ] Implement cache service
+- [x] Design Prisma schema
+- [x] Create User model
+- [x] Create Attendance cache model
+- [x] Create CGPA cache model
+- [x] Setup Redis connection
+- [x] Implement cache service
 - [ ] Run database migrations
 
 ### Phase 5: Containerization & DevOps
 
-- [ ] Create Backend Dockerfile
-- [ ] Create Frontend Dockerfile
-- [ ] Create docker-compose.yml
-- [ ] Setup PostgreSQL container
-- [ ] Setup Redis container
-- [ ] Setup environment variables
+- [x] Create Backend Dockerfile
+- [x] Create Frontend Dockerfile
+- [x] Create docker-compose.yml
+- [x] Setup PostgreSQL container
+- [x] Setup Redis container
+- [x] Setup environment variables
 - [ ] Test local development with Docker
-- [ ] Create production build configuration
+- [x] Create production build configuration
 
 ### Phase 6: Testing & Quality
 
-- [ ] Setup Jest for backend
-- [ ] Write backend unit tests
+- [x] Setup Jest for backend
+- [x] Write backend unit tests
 - [ ] Setup Vitest for frontend
 - [ ] Write frontend component tests
 - [ ] Setup E2E testing (Playwright)
-- [ ] Setup ESLint + Prettier
+- [x] Setup ESLint + Prettier
 - [ ] Achieve >80% test coverage
 
 ### Phase 7: Migration & Documentation
