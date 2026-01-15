@@ -13,6 +13,7 @@ import { InternalsModule } from './internals/internals.module';
 import { FeedbackModule } from './feedback/feedback.module';
 import { ScrapersModule } from './scrapers/scrapers.module';
 import { CacheModule } from './cache/cache.module';
+import { HealthModule } from './health/health.module';
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 
 @Module({
@@ -26,6 +27,7 @@ import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
     // Core modules
     PrismaModule,
     CacheModule,
+    HealthModule,
 
     // Feature modules
     AuthModule,

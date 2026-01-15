@@ -1,0 +1,67 @@
+# Ignore everything by default
+*
+
+# Docker files
+!Dockerfile
+!Dockerfile.*
+!docker-compose*.yml
+!nginx.conf
+!nginx/
+
+# Application code
+!apps/
+!packages/
+
+# Configuration files
+!package.json
+!pnpm-lock.yaml
+!pnpm-workspace.yaml
+!tsconfig*.json
+!next.config.ts
+!postcss.config.mjs
+!tailwind.config.ts
+!components.json
+
+# Prisma
+!prisma/
+
+# Public assets
+!public/
+
+# Source code
+!src/
+
+# Ignore node_modules everywhere
+node_modules/
+
+# Ignore build outputs
+dist/
+.next/
+build/
+
+# Ignore environment files
+.env*
+!.env.example
+
+# Ignore git
+.git/
+
+# Ignore IDE files
+.vscode/
+.idea/
+
+# Ignore OS files
+.DS_Store
+Thumbs.db
+
+# Ignore logs
+*.log
+logs/
+
+# Ignore test coverage
+coverage/
+
+# Ignore temp files
+*.tmp
+*.temp
+.cache/
