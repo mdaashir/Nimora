@@ -14,6 +14,7 @@ const navItems = [
   { href: '/dashboard/attendance', label: 'Attendance', icon: '📅' },
   { href: '/dashboard/cgpa', label: 'CGPA', icon: '📈' },
   { href: '/dashboard/timetable', label: 'Timetable', icon: '📋' },
+  { href: '/dashboard/class-timetable', label: 'Class Timetable', icon: '🗓️', conditional: true },
   { href: '/dashboard/internals', label: 'Internals', icon: '📝' },
   { href: '/dashboard/feedback', label: 'Feedback', icon: '💬' },
 ];

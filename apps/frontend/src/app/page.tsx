@@ -1,53 +1,9 @@
-import Link from 'next/link';
-import { GraduationCap, BookOpen, Calendar, Award, ClipboardList, MessageSquare } from 'lucide-react';
-
-const features = [
-  {
-    icon: BookOpen,
-    title: 'Attendance',
-    description: 'Track your attendance and know how many classes you can bunk',
-    href: '/attendance',
-    color: 'text-blue-500',
-  },
-  {
-    icon: Award,
-    title: 'CGPA',
-    description: 'View your CGPA, semester-wise GPA, and grade distribution',
-    href: '/cgpa',
-    color: 'text-purple-500',
-  },
-  {
-    icon: Calendar,
-    title: 'Timetable',
-    description: 'Check your exam schedule and class timetable',
-    href: '/timetable',
-    color: 'text-green-500',
-  },
-  {
-    icon: ClipboardList,
-    title: 'Internals',
-    description: 'View internal marks and calculate required end semester marks',
-    href: '/internals',
-    color: 'text-orange-500',
-  },
-  {
-    icon: MessageSquare,
-    title: 'Feedback',
-    description: 'Automate feedback submission with one click',
-    href: '/feedback',
-    color: 'text-pink-500',
-  },
-];
+import { redirect } from 'next/navigation';
 
 export default function HomePage() {
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
-      {/* Hero Section */}
-      <div className="relative overflow-hidden">
-        <div className="absolute inset-0 nimora-gradient opacity-10" />
-        <div className="relative mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <div className="flex justify-center mb-6">
+  redirect('/login');
+}
+
               <div className="flex items-center gap-3 rounded-full bg-white/80 dark:bg-slate-800/80 px-6 py-3 shadow-lg backdrop-blur">
                 <GraduationCap className="h-10 w-10 text-primary" />
                 <span className="text-3xl font-bold nimora-gradient-text">
