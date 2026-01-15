@@ -20,9 +20,11 @@
 - **📊 Attendance Tracking** - View attendance with bunk calculator
 - **📈 CGPA Analytics** - Semester-wise GPA breakdown
 - **📅 Timetable & Exams** - Class and exam schedules
+- **�️ Class Timetable** - Conditional access for specific students (22PT roll numbers)
 - **📝 Internal Marks** - Track continuous assessment scores
-- **💬 Auto Feedback** - Automate faculty feedback submission
+- **💬 Auto Feedback** - Automate faculty feedback submission (Puppeteer-based)
 - **🔐 Secure Auth** - JWT authentication with encrypted credentials
+- **🎨 Original Design** - Restored blue theme (#1173d4) from original Skipp branding
 
 ## 🛠️ Tech Stack
 
