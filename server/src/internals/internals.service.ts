@@ -1,6 +1,6 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { InternalsScraperService } from "../scrapers/internals.scraper";
-import type { InternalsResponse } from "@nimora/types";
+import type { InternalsResponse } from "../types";
 
 @Injectable()
 export class InternalsService {

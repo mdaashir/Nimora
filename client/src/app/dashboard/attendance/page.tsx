@@ -7,7 +7,7 @@ import { Progress } from '@/components/ui/progress';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { apiClient } from '@/lib/api-client';
-import type { AttendanceResponse, CourseAttendance } from '@nimora/types';
+import type { AttendanceResponse, CourseAttendance } from '@/types';
 
 export default function AttendancePage() {
   const [threshold, setThreshold] = useState(75);

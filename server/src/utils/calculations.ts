@@ -1,6 +1,6 @@
 // Calculation utilities for academic data
 
-import { GRADE_POINTS } from '@nimora/types';
+import { GRADE_POINTS } from "../types";
 
 /**
  * Calculate how many classes can be bunked while maintaining threshold
@@ -11,7 +11,7 @@ import { GRADE_POINTS } from '@nimora/types';
 export function calculateBunkableClasses(
   attended: number,
   total: number,
-  threshold: number = 75
+  threshold: number = 75,
 ): number {
   if (threshold <= 0 || threshold > 100) return 0;
   if (total === 0) return 0;
@@ -30,7 +30,7 @@ export function calculateBunkableClasses(
 export function calculateClassesNeeded(
   attended: number,
   total: number,
-  threshold: number = 75
+  threshold: number = 75,
 ): number {
   if (threshold <= 0 || threshold > 100) return 0;
 
@@ -40,7 +40,7 @@ export function calculateClassesNeeded(
   // Formula: (attended + x) / (total + x) >= threshold / 100
   // Solving for x: x >= (threshold * total - 100 * attended) / (100 - threshold)
   const needed = Math.ceil(
-    (threshold * total - 100 * attended) / (100 - threshold)
+    (threshold * total - 100 * attended) / (100 - threshold),
   );
   return Math.max(0, needed);
 }
@@ -50,7 +50,7 @@ export function calculateClassesNeeded(
  */
 export function calculateAttendancePercentage(
   attended: number,
-  total: number
+  total: number,
 ): number {
   if (total === 0) return 0;
   return Math.round((attended / total) * 100 * 100) / 100;
@@ -60,14 +60,14 @@ export function calculateAttendancePercentage(
  * Calculate CGPA from semester GPAs
  */
 export function calculateCGPA(
-  semesterGPAs: Array<{ gpa: number; credits: number }>
+  semesterGPAs: Array<{ gpa: number; credits: number }>,
 ): number {
   const totalCredits = semesterGPAs.reduce((sum, s) => sum + s.credits, 0);
   if (totalCredits === 0) return 0;
 
   const weightedSum = semesterGPAs.reduce(
     (sum, s) => sum + s.gpa * s.credits,
-    0
+    0,
   );
   return Math.round((weightedSum / totalCredits) * 100) / 100;
 }
@@ -89,7 +89,7 @@ export function calculateRequiredEndsem(
   internalMarks: number,
   maxInternal: number = 40,
   targetTotal: number = 50,
-  endsemMax: number = 60
+  endsemMax: number = 60,
 ): number | null {
   // Normalize internal to 40 (40% weightage)
   const normalizedInternal = (internalMarks / maxInternal) * 40;

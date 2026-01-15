@@ -23,12 +23,9 @@ importers:
       "@hookform/resolvers":
         specifier: ^3.9.0
         version: 3.10.0(react-hook-form@7.71.1(react@19.2.3))
-      "@nimora/types":
+      "@nimora/server":
         specifier: workspace:*
-        version: link:../server/types
-      "@nimora/utils":
-        specifier: workspace:*
-        version: link:../server/utils
+        version: link:../server
       "@radix-ui/react-avatar":
         specifier: ^1.1.2
         version: 1.1.11(@types/react-dom@19.2.3(@types/react@19.2.8))(@types/react@19.2.8)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
@@ -192,12 +189,6 @@ importers:
       "@nestjs/swagger":
         specifier: ^11.0.0
         version: 11.2.5(@nestjs/common@11.1.12(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.12)(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)
-      "@nimora/types":
-        specifier: workspace:*
-        version: link:types
-      "@nimora/utils":
-        specifier: workspace:*
-        version: link:utils
       "@prisma/client":
         specifier: ^6.2.0
         version: 6.19.2(prisma@6.19.2(typescript@5.9.3))(typescript@5.9.3)
@@ -334,27 +325,6 @@ importers:
       typescript-eslint:
         specifier: ^8.53.0
         version: 8.53.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3)
-
-  server/types:
-    devDependencies:
-      typescript:
-        specifier: ^5.7.0
-        version: 5.9.3
-
-  server/utils:
-    devDependencies:
-      "@types/jest":
-        specifier: ^29.5.14
-        version: 29.5.14
-      jest:
-        specifier: ^29.7.0
-        version: 29.7.0(@types/node@22.19.7)(ts-node@10.9.2(@types/node@22.19.7)(typescript@5.9.3))
-      ts-jest:
-        specifier: ^29.2.0
-        version: 29.4.6(@babel/core@7.28.6)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.28.6))(jest-util@29.7.0)(jest@29.7.0(@types/node@22.19.7)(ts-node@10.9.2(@types/node@22.19.7)(typescript@5.9.3)))(typescript@5.9.3)
-      typescript:
-        specifier: ^5.7.0
-        version: 5.9.3
 
 packages:
   "@adobe/css-tools@4.4.4":

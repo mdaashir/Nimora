@@ -1,11 +1,7 @@
 import { Injectable, Logger } from "@nestjs/common";
 import * as cheerio from "cheerio";
 import { EcampusAuthService } from "./ecampus-auth.service";
-import type {
-  InternalsResponse,
-  InternalMark,
-  CourseInternal,
-} from "@nimora/types";
+import type { InternalsResponse, InternalMark, CourseInternal } from "../types";
 
 const INTERNALS_URL =
   "https://ecampus.psgtech.ac.in/studzone/ContinuousAssessment/CAMarksView";

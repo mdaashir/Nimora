@@ -34,14 +34,14 @@ export interface CGPARequest {
 
 // Grade mapping
 export const GRADE_POINTS: Record<string, number> = {
-  'O': 10,
-  'A+': 9,
-  'A': 8,
-  'B+': 7,
-  'B': 6,
-  'C': 5,
-  'P': 4,
-  'RA': 0,
-  'SA': 0,
-  'W': 0,
+  O: 10,
+  "A+": 9,
+  A: 8,
+  "B+": 7,
+  B: 6,
+  C: 5,
+  P: 4,
+  RA: 0,
+  SA: 0,
+  W: 0,
 };

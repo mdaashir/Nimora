@@ -6,7 +6,7 @@ export interface ExamSchedule {
   time: string;
   venue?: string;
   day?: string;
-  session?: 'FN' | 'AN';
+  session?: "FN" | "AN";
 }
 
 export interface ExamScheduleResponse {

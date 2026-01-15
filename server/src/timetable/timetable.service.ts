@@ -1,9 +1,6 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { TimetableScraperService } from "../scrapers/timetable.scraper";
-import type {
-  ExamScheduleResponse,
-  ClassTimetableResponse,
-} from "@nimora/types";
+import type { ExamScheduleResponse, ClassTimetableResponse } from "../types";
 
 @Injectable()
 export class TimetableService {

@@ -1,12 +1,8 @@
 import { Injectable, Logger } from "@nestjs/common";
 import * as cheerio from "cheerio";
 import { EcampusAuthService } from "./ecampus-auth.service";
-import type {
-  CGPAResponse,
-  SemesterGPA,
-  CourseGrade,
-} from "@nimora/types";
-import { getGradePoint } from "@nimora/utils";
+import type { CGPAResponse, SemesterGPA, CourseGrade } from "../types";
+import { getGradePoint } from "../utils";
 
 const CGPA_URLS = {
   COURSE_SELECTION:

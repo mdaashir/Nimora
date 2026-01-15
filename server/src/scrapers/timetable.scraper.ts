@@ -6,7 +6,7 @@ import type {
   ExamScheduleResponse,
   ExamSchedule,
   TimetableSlot,
-} from "@nimora/types";
+} from "../types";
 
 const TIMETABLE_URLS = {
   EXAM_SCHEDULE:

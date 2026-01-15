@@ -1,15 +1,12 @@
 import { Injectable, Logger } from "@nestjs/common";
 import * as cheerio from "cheerio";
 import { EcampusAuthService } from "./ecampus-auth.service";
-import type {
-  AttendanceResponse,
-  CourseAttendance,
-} from "@nimora/types";
+import type { AttendanceResponse, CourseAttendance } from "../types";
 import {
   calculateBunkableClasses,
   calculateClassesNeeded,
   calculateAttendancePercentage,
-} from "@nimora/utils";
+} from "../utils";
 
 const ATTENDANCE_URLS = {
   STUDENT_PERCENTAGE:

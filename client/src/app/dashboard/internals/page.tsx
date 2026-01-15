@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { apiClient } from '@/lib/api-client';
-import type { InternalsResponse } from '@nimora/types';
+import type { InternalsResponse } from '@/types';
 
 export default function InternalsPage() {
   const { data, isLoading } = useQuery<InternalsResponse>({
