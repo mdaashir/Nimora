@@ -1,14 +1,14 @@
-version: '3.9'
+version: "3.9"
 
 # Development compose override
 services:
   postgres:
     ports:
-      - '5432:5432'
+      - "5432:5432"
 
   redis:
     ports:
-      - '6379:6379'
+      - "6379:6379"
 
   # Backend in development mode with hot-reload
   api:
@@ -23,16 +23,15 @@ services:
       REDIS_HOST: redis
       REDIS_PORT: 6379
       REDIS_PASSWORD: ${REDIS_PASSWORD:-nimora_redis_secret}
-      JWT_SECRET: ${JWT_SECRET:-dev_jwt_secret_change_in_production}
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:-dev_jwt_access_secret_change_in_production}
       JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:-dev_refresh_secret_change_in_production}
       ECAMPUS_BASE_URL: ${ECAMPUS_BASE_URL:-https://ecampus.psgtech.ac.in}
       ENCRYPTION_KEY: ${ENCRYPTION_KEY:-dev_encryption_key_32chars!}
     volumes:
       - ./server/src:/app/server/src:ro
-      - ./packages:/app/packages:ro
     ports:
-      - '3001:3001'
-      - '9229:9229' # Debug port
+      - "3001:3001"
+      - "9229:9229" # Debug port
     command: pnpm run start:dev
 
   # Frontend in development mode with hot-reload
@@ -48,5 +47,5 @@ services:
       - ./client/src:/app/client/src:ro
       - ./packages:/app/packages:ro
     ports:
-      - '3000:3000'
+      - "3000:3000"
     command: pnpm run dev

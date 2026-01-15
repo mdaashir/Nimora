@@ -1,4 +1,4 @@
-version: '3.9'
+version: "3.9"
 
 services:
   # PostgreSQL Database
@@ -13,9 +13,13 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
-      - '5432:5432'
+      - "5432:5432"
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER:-nimora} -d ${POSTGRES_DB:-nimora}']
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${POSTGRES_USER:-nimora} -d ${POSTGRES_DB:-nimora}",
+        ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -31,9 +35,16 @@ services:
     volumes:
       - redis_data:/data
     ports:
-      - '6379:6379'
+      - "6379:6379"
     healthcheck:
-      test: ['CMD', 'redis-cli', '-a', '${REDIS_PASSWORD:-nimora_redis_secret}', 'ping']
+      test:
+        [
+          "CMD",
+          "redis-cli",
+          "-a",
+          "${REDIS_PASSWORD:-nimora_redis_secret}",
+          "ping",
+        ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -54,19 +65,25 @@ services:
       REDIS_HOST: redis
       REDIS_PORT: 6379
       REDIS_PASSWORD: ${REDIS_PASSWORD:-nimora_redis_secret}
-      JWT_SECRET: ${JWT_SECRET}
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET}
       JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET}
       ECAMPUS_BASE_URL: ${ECAMPUS_BASE_URL:-https://ecampus.psgtech.ac.in}
       ENCRYPTION_KEY: ${ENCRYPTION_KEY}
     ports:
-      - '3001:3001'
+      - "3001:3001"
     depends_on:
       postgres:
         condition: service_healthy
       redis:
         condition: service_healthy
     healthcheck:
-      test: ['CMD', 'node', '-e', "require('http').get('http://localhost:3001/api/health', (r) => r.statusCode === 200 ? process.exit(0) : process.exit(1))"]
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "require('http').get('http://localhost:3001/api/health', (r) => r.statusCode === 200 ? process.exit(0) : process.exit(1))",
+        ]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -87,12 +104,18 @@ services:
       NODE_ENV: production
       NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://api:3001/api}
     ports:
-      - '3000:3000'
+      - "3000:3000"
     depends_on:
       api:
         condition: service_healthy
     healthcheck:
-      test: ['CMD', 'node', '-e', "require('http').get('http://localhost:3000', (r) => r.statusCode === 200 ? process.exit(0) : process.exit(1))"]
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "require('http').get('http://localhost:3000', (r) => r.statusCode === 200 ? process.exit(0) : process.exit(1))",
+        ]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -109,8 +132,8 @@ services:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/ssl:/etc/nginx/ssl:ro
     ports:
-      - '80:80'
-      - '443:443'
+      - "80:80"
+      - "443:443"
     depends_on:
       - frontend
       - api

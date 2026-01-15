@@ -19,17 +19,10 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"],
-      "@nimora/shared-types": ["../../packages/shared-types/src"],
-      "@nimora/shared-utils": ["../../packages/shared-utils/src"]
+      "@/*": ["./src/*"]
     },
     "baseUrl": "."
   },
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    ".next/types/**/*.ts"
-  ],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
   "exclude": ["node_modules"]
 }

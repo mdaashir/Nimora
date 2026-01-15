@@ -18,9 +18,7 @@
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
     "paths": {
-      "@/*": ["src/*"],
-      "@nimora/types": ["types/src"],
-      "@nimora/utils": ["utils/src"]
+      "@/*": ["src/*"]
     },
     "esModuleInterop": true,
     "resolveJsonModule": true

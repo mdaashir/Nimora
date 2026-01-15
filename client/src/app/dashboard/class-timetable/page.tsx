@@ -18,7 +18,8 @@ export default function ClassTimetablePage() {
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
-        const response = await fetch('http://localhost:3001/user/profile', {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
+        const response = await fetch(`${apiUrl}/users/profile`, {
           credentials: 'include',
         });
 
