@@ -187,46 +187,6 @@ export class AuthService {
   }
 
   /**
-   * Login with Google OAuth - creates tokens for authenticated user
-   */
-  async loginWithGoogle(googleUser: {
-    id: string;
-    email: string;
-    name: string;
-    avatarUrl: string;
-  }): Promise<AuthTokensResponseDto> {
-    // User should already exist from GoogleStrategy validation
-    const user = await this.prisma.user.findUnique({
-      where: { id: googleUser.id },
-    });
-
-    if (!user) {
-      throw new UnauthorizedException("User not found");
-    }
-
-    // Generate tokens
-    const tokens = await this.generateTokens(user.id, user.email);
-
-    // Update last login
-    await this.prisma.user.update({
-      where: { id: user.id },
-      data: { lastLoginAt: new Date() },
-    });
-
-    this.logger.log(`User logged in via Google: ${user.email}`);
-
-    return {
-      ...tokens,
-      user: {
-        id: user.id,
-        email: user.email,
-        name: user.name,
-        avatarUrl: user.avatarUrl,
-      },
-    };
-  }
-
-  /**
    * Encrypt eCampus credentials for storage
    */
   encryptCredentials(
