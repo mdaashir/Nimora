@@ -36,6 +36,9 @@ Thumbs.db
 # Testing
 coverage/
 .nyc_output/
+playwright-report/
+test-results/
+html/
 
 # Prisma
 prisma/migrations/*_migration_lock.toml
