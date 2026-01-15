@@ -35,8 +35,6 @@ apiClient.interceptors.response.use(
     return response;
   },
   async (error: AxiosError<ErrorResponse>) => {
-    const originalRequest = error.config;
-
     // Handle 401 Unauthorized - redirect to login
     if (error.response?.status === 401) {
       // Clear any stored auth state

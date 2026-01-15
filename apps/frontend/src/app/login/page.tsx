@@ -31,7 +31,7 @@ export default function LoginPage() {
       toast.success('Login successful!');
       router.push('/dashboard');
     },
-    onError: (error: any) => {
+    onError: (error: Error & { response?: { data?: { message?: string } } }) => {
       toast.error(error.response?.data?.message || 'Login failed. Please check your credentials.');
     },
   });

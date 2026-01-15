@@ -5,7 +5,6 @@ import { useMutation } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
 import { apiClient } from '@/lib/api-client';
 
 interface FeedbackOption {
@@ -34,7 +33,7 @@ export default function FeedbackPage() {
     onSuccess: () => {
       toast.success('Feedback submitted successfully!');
     },
-    onError: (error: any) => {
+    onError: (error: Error & { response?: { data?: { message?: string } } }) => {
       toast.error(error.response?.data?.message || 'Failed to submit feedback');
     },
   });

@@ -3,10 +3,10 @@
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { apiClient } from '@/lib/api-client';
-import type { ExamScheduleResponse, ExamSchedule } from '@nimora/shared-types';
+import type { ExamScheduleResponse } from '@nimora/shared-types';
 
 export default function TimetablePage() {
-  const { data, isLoading, error } = useQuery<ExamScheduleResponse>({
+  const { data, isLoading } = useQuery<ExamScheduleResponse>({
     queryKey: ['timetable'],
     queryFn: async () => {
       const response = await apiClient.get('/timetable/exams');

@@ -6,7 +6,7 @@ import { apiClient } from '@/lib/api-client';
 import type { CGPAResponse, SemesterGPA } from '@nimora/shared-types';
 
 export default function CGPAPage() {
-  const { data, isLoading, error } = useQuery<CGPAResponse>({
+  const { data, isLoading } = useQuery<CGPAResponse>({
     queryKey: ['cgpa'],
     queryFn: async () => {
       const response = await apiClient.get('/cgpa');
@@ -20,15 +20,6 @@ export default function CGPAPage() {
     if (gpa >= 8) return 'text-blue-400';
     if (gpa >= 7) return 'text-yellow-400';
     return 'text-orange-400';
-  };
-
-  const getGradeFromGPA = (gpa: number): string => {
-    if (gpa >= 9) return 'O';
-    if (gpa >= 8) return 'A';
-    if (gpa >= 7) return 'B+';
-    if (gpa >= 6) return 'B';
-    if (gpa >= 5) return 'C';
-    return 'RA';
   };
 
   return (

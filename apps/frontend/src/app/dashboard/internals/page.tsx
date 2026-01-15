@@ -4,10 +4,10 @@ import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { apiClient } from '@/lib/api-client';
-import type { InternalsResponse, CourseInternal } from '@nimora/shared-types';
+import type { InternalsResponse } from '@nimora/shared-types';
 
 export default function InternalsPage() {
-  const { data, isLoading, error } = useQuery<InternalsResponse>({
+  const { data, isLoading } = useQuery<InternalsResponse>({
     queryKey: ['internals'],
     queryFn: async () => {
       const response = await apiClient.get('/internals');
@@ -21,13 +21,6 @@ export default function InternalsPage() {
     if (percentage >= 60) return 'text-yellow-400';
     if (percentage >= 40) return 'text-orange-400';
     return 'text-red-400';
-  };
-
-  const getProgressBarColor = (percentage: number) => {
-    if (percentage >= 80) return 'bg-green-500';
-    if (percentage >= 60) return 'bg-yellow-500';
-    if (percentage >= 40) return 'bg-orange-500';
-    return 'bg-red-500';
   };
 
   return (

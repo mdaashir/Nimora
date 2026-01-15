@@ -16,7 +16,7 @@ interface DashboardData {
 }
 
 export default function DashboardPage() {
-  const { data, isLoading, error } = useQuery<DashboardData>({
+  const { data, isLoading } = useQuery<DashboardData>({
     queryKey: ['dashboard'],
     queryFn: async () => {
       // Fetch multiple endpoints in parallel
@@ -71,7 +71,7 @@ export default function DashboardPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold text-white">Dashboard</h1>
-        <p className="text-slate-400">Welcome back! Here's your overview.</p>
+        <p className="text-slate-400">Welcome back! Here&apos;s your overview.</p>
       </div>
 
       {/* Quick Stats Grid */}

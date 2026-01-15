@@ -7,13 +7,12 @@ import { Progress } from '@/components/ui/progress';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { apiClient } from '@/lib/api-client';
-import { calculateBunkableClasses } from '@nimora/shared-utils';
 import type { AttendanceResponse, CourseAttendance } from '@nimora/shared-types';
 
 export default function AttendancePage() {
   const [threshold, setThreshold] = useState(75);
 
-  const { data, isLoading, error, refetch } = useQuery<AttendanceResponse>({
+  const { data, isLoading } = useQuery<AttendanceResponse>({
     queryKey: ['attendance', threshold],
     queryFn: async () => {
       const response = await apiClient.get(`/attendance?threshold=${threshold}`);
@@ -26,12 +25,6 @@ export default function AttendancePage() {
     if (percentage >= 85) return 'text-green-400';
     if (percentage >= 75) return 'text-yellow-400';
     return 'text-red-400';
-  };
-
-  const getProgressColor = (percentage: number) => {
-    if (percentage >= 85) return 'bg-green-500';
-    if (percentage >= 75) return 'bg-yellow-500';
-    return 'bg-red-500';
   };
 
   const getBunkStatus = (course: CourseAttendance) => {

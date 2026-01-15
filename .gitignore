@@ -8,6 +8,11 @@ dist/
 out/
 build/
 
+# TypeScript compiled outputs in shared packages
+packages/*/src/*.js
+packages/*/src/*.js.map
+packages/*/src/*.d.ts
+
 # Environment files
 .env
 .env.local
