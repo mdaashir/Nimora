@@ -3,7 +3,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { apiClient } from '@/lib/api-client';
-import type { CGPAResponse, SemesterGPA } from '@nimora/shared-types';
+import type { CGPAResponse, SemesterGPA } from '@nimora/types';
 
 export default function CGPAPage() {
   const { data, isLoading } = useQuery<CGPAResponse>({

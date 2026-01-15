@@ -28,15 +28,15 @@
 
 ## Tech Stack
 
-| Component | Technology |
-|-----------|------------|
+| Component    | Technology                                      |
+| ------------ | ----------------------------------------------- |
 | **Frontend** | Next.js 15, React 19, TailwindCSS v4, shadcn/ui |
-| **Backend** | NestJS 11, Prisma ORM, PostgreSQL 17 |
-| **Scraping** | Puppeteer (Node.js) |
-| **Cache** | Redis 7 |
-| **Auth** | JWT, Passport.js, AES-256-GCM Encryption |
-| **Testing** | Jest + Vitest + Playwright (50+ tests) |
-| **Security** | A Rating - OWASP Top 10 Mitigated |
+| **Backend**  | NestJS 11, Prisma ORM, PostgreSQL 17            |
+| **Scraping** | Puppeteer (Node.js)                             |
+| **Cache**    | Redis 7                                         |
+| **Auth**     | JWT, Passport.js, AES-256-GCM Encryption        |
+| **Testing**  | Jest + Vitest + Playwright (50+ tests)          |
+| **Security** | A Rating - OWASP Top 10 Mitigated               |
 
 ## Project Structure
 
@@ -67,7 +67,7 @@ nimora/
 
 ```bash
 # Clone repository
-git clone https://github.com/YOUR_USERNAME/Nimora.git
+git clone https://github.com/mdaashir/Nimora.git
 cd Nimora
 
 # Install dependencies
@@ -98,24 +98,15 @@ docker-compose exec backend npx prisma migrate deploy
 
 ## API Endpoints
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/health` | Health check |
-| POST | `/api/auth/login` | Login |
-| POST | `/api/attendance` | Get attendance |
-| POST | `/api/cgpa` | Get CGPA |
-| POST | `/api/timetable` | Get timetable |
-| POST | `/api/internals` | Get internal marks |
-| POST | `/api/feedback` | Submit feedback |
-
-## Documentation
-
-- [Setup & Configuration](docs/ENVIRONMENT_SETUP.md)
-- [Deployment Guide](docs/PRODUCTION_DEPLOYMENT.md)
-- [Developer Setup](docs/DEVELOPER_SETUP.md)
-- [Testing Guide](docs/TESTING.md)
-- [Security Audit](docs/SECURITY_AUDIT.md)
-- [Performance Report](docs/PERFORMANCE.md)
+| Method | Endpoint          | Description        |
+| ------ | ----------------- | ------------------ |
+| GET    | `/api/health`     | Health check       |
+| POST   | `/api/auth/login` | Login              |
+| POST   | `/api/attendance` | Get attendance     |
+| POST   | `/api/cgpa`       | Get CGPA           |
+| POST   | `/api/timetable`  | Get timetable      |
+| POST   | `/api/internals`  | Get internal marks |
+| POST   | `/api/feedback`   | Submit feedback    |
 
 ## Testing
 
@@ -137,6 +128,7 @@ pnpm test:coverage
 ```
 
 **Test Coverage:**
+
 - Backend: 27 unit tests
 - Frontend: 3 component test suites
 - E2E: 2 Playwright test suites

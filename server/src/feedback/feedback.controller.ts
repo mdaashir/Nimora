@@ -2,6 +2,7 @@ import { Controller, Post, Body, HttpCode, HttpStatus } from "@nestjs/common";
 import { ApiTags, ApiOperation } from "@nestjs/swagger";
 import { FeedbackService } from "./feedback.service";
 import { Public } from "../auth/decorators/public.decorator";
+import { FeedbackRequestDto } from "./dto/feedback-request.dto";
 
 @ApiTags("feedback")
 @Controller("feedback")
@@ -12,9 +13,7 @@ export class FeedbackController {
   @Public()
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: "Submit feedback automatically" })
-  async submitFeedback(
-    @Body() body: { rollno: string; password: string; feedbackIndex?: number },
-  ) {
+  async submitFeedback(@Body() body: FeedbackRequestDto) {
     return this.feedbackService.submitFeedback(
       body.rollno,
       body.password,

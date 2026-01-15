@@ -2,11 +2,7 @@ import { Controller, Post, Body, HttpCode, HttpStatus } from "@nestjs/common";
 import { ApiTags, ApiOperation, ApiResponse } from "@nestjs/swagger";
 import { CgpaService } from "./cgpa.service";
 import { Public } from "../auth/decorators/public.decorator";
-
-class CgpaRequestDto {
-  rollno: string;
-  password: string;
-}
+import { CgpaRequestDto } from "./dto/cgpa-request.dto";
 
 @ApiTags("cgpa")
 @Controller("cgpa")

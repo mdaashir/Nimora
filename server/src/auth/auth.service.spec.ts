@@ -9,10 +9,9 @@ import { CryptoService } from "./crypto.service";
 
 describe("AuthService", () => {
   let service: AuthService;
-  // Keeping references for future use
-  let _prismaService: PrismaService;
-  let _jwtService: JwtService;
-  let _cryptoService: CryptoService;
+  let prismaService: PrismaService;
+  let jwtService: JwtService;
+  let cryptoService: CryptoService;
 
   const mockPrismaService = {
     user: {
@@ -68,9 +67,9 @@ describe("AuthService", () => {
     }).compile();
 
     service = module.get<AuthService>(AuthService);
-    _prismaService = module.get<PrismaService>(PrismaService);
-    _jwtService = module.get<JwtService>(JwtService);
-    _cryptoService = module.get<CryptoService>(CryptoService);
+    prismaService = module.get<PrismaService>(PrismaService);
+    jwtService = module.get<JwtService>(JwtService);
+    cryptoService = module.get<CryptoService>(CryptoService);
 
     // Reset mocks
     jest.clearAllMocks();

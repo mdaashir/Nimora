@@ -4,9 +4,6 @@ const nextConfig = {
   poweredByHeader: false,
   compress: true,
 
-  // Performance optimizations
-  swcMinify: true,
-
   experimental: {
     serverActions: {
       bodySizeLimit: '2mb',
