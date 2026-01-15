@@ -1,7 +1,7 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
 import { CgpaScraperService } from "../scrapers/cgpa.scraper";
-import type { CGPAResponse } from "@nimora/shared-types";
+import type { CGPAResponse } from "@nimora/types";
 
 @Injectable()
 export class CgpaService {

@@ -1,5 +1,5 @@
 {
-    "name": "@nimora/shared-utils",
+    "name": "@nimora/utils",
     "version": "1.0.0",
     "private": true,
     "main": "./src/index.ts",

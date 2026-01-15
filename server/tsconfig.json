@@ -19,8 +19,8 @@
     "noFallthroughCasesInSwitch": true,
     "paths": {
       "@/*": ["src/*"],
-      "@nimora/shared-types": ["shared-types/src"],
-      "@nimora/shared-utils": ["shared-utils/src"]
+      "@nimora/types": ["types/src"],
+      "@nimora/utils": ["utils/src"]
     },
     "esModuleInterop": true,
     "resolveJsonModule": true

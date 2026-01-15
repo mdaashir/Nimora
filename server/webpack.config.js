@@ -10,15 +10,15 @@ module.exports = (options, webpack) => {
         // Wrap the function to exclude our packages
         filteredExternals.push((ctx, callback) => {
           const request = ctx.request;
-          if (request && (request.startsWith('@nimora/') || request.includes('shared-types') || request.includes('shared-utils'))) {
+          if (request && (request.startsWith('@nimora/') || request.includes('types') || request.includes('utils'))) {
             return callback();
           }
           return external(ctx, callback);
         });
       } else if (typeof external === 'object') {
         const filtered = { ...external };
-        delete filtered['@nimora/shared-types'];
-        delete filtered['@nimora/shared-utils'];
+        delete filtered['@nimora/types'];
+        delete filtered['@nimora/utils'];
         if (Object.keys(filtered).length > 0) {
           filteredExternals.push(filtered);
         }
@@ -34,8 +34,8 @@ module.exports = (options, webpack) => {
       ...options.resolve,
       alias: {
         ...options.resolve?.alias,
-        '@nimora/shared-types': path.resolve(__dirname, 'shared-types/src'),
-        '@nimora/shared-utils': path.resolve(__dirname, 'shared-utils/src'),
+        '@nimora/types': path.resolve(__dirname, 'types/src'),
+        '@nimora/utils': path.resolve(__dirname, 'utils/src'),
       },
     },
     externals: filteredExternals,

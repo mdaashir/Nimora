@@ -10,7 +10,7 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "paths": {
-      "@nimora/shared-types": ["../shared-types/src"]
+      "@nimora/types": ["../types/src"]
     }
   },
   "include": ["src/**/*"],

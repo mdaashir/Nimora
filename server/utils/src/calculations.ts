@@ -1,6 +1,6 @@
 // Calculation utilities for academic data
 
-import { GRADE_POINTS } from '@nimora/shared-types';
+import { GRADE_POINTS } from '@nimora/types';
 
 /**
  * Calculate how many classes can be bunked while maintaining threshold

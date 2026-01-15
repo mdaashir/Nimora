@@ -5,7 +5,7 @@ import type {
   InternalsResponse,
   InternalMark,
   CourseInternal,
-} from "@nimora/shared-types";
+} from "@nimora/types";
 
 const INTERNALS_URL =
   "https://ecampus.psgtech.ac.in/studzone/ContinuousAssessment/CAMarksView";

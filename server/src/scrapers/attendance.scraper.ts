@@ -4,7 +4,7 @@ import { EcampusAuthService } from "./ecampus-auth.service";
 import type {
   AttendanceResponse,
   CourseAttendance,
-} from "@nimora/shared-types";
+} from "@nimora/types";
 import {
   calculateBunkableClasses,
   calculateClassesNeeded,

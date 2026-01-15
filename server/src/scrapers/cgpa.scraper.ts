@@ -5,8 +5,8 @@ import type {
   CGPAResponse,
   SemesterGPA,
   CourseGrade,
-} from "@nimora/shared-types";
-import { getGradePoint } from "@nimora/shared-utils";
+} from "@nimora/types";
+import { getGradePoint } from "@nimora/utils";
 
 const CGPA_URLS = {
   COURSE_SELECTION:

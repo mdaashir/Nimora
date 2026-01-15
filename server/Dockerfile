@@ -9,8 +9,8 @@ RUN corepack enable && corepack prepare pnpm@9.15.0 --activate
 # Copy package files
 COPY package.json pnpm-lock.yaml* pnpm-workspace.yaml ./
 COPY server/package.json ./server/
-COPY server/shared-types/package.json ./server/shared-types/
-COPY server/shared-utils/package.json ./server/shared-utils/
+COPY server/types/package.json ./server/types/
+COPY server/utils/package.json ./server/utils/
 
 # Install dependencies
 RUN pnpm install --frozen-lockfile
