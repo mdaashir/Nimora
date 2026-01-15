@@ -22,7 +22,7 @@
 - **📅 Timetable & Exams** - Class and exam schedules
 - **📝 Internal Marks** - Track continuous assessment scores
 - **💬 Auto Feedback** - Automate faculty feedback submission
-- **🔐 Secure Auth** - JWT + Google OAuth authentication
+- **🔐 Secure Auth** - JWT authentication with encrypted credentials
 
 ## 🛠️ Tech Stack
 
@@ -32,7 +32,7 @@
 | **Backend** | NestJS 11, Prisma ORM, PostgreSQL |
 | **Scraping** | Puppeteer (Node.js) |
 | **Cache** | Redis |
-| **Auth** | JWT, Passport.js, Google OAuth 2.0 |
+| **Auth** | JWT, Passport.js, AES-256-GCM Encryption |
 | **Testing** | Jest (47 tests passing) |
 
 ## 📁 Project Structure
@@ -76,11 +76,11 @@ cd apps/backend
 export ENCRYPTION_KEY="your-32-character-encryption-key!"
 export JWT_SECRET="your-jwt-secret-key-minimum-32-char"
 export JWT_REFRESH_SECRET="your-refresh-secret-minimum-32ch"
-pnpm build && node ./dist/main.js
+pnpm dev
 ```
 
-**Frontend:** http://localhost:3000  
-**Backend:** http://localhost:3001  
+**Frontend:** http://localhost:3000
+**Backend:** http://localhost:3001
 **API Docs:** http://localhost:3001/api/docs
 
 ## 🐳 Docker Deployment
@@ -125,9 +125,11 @@ pnpm -r test
 ## 🔐 Security
 
 - All eCampus credentials encrypted with AES-256-GCM
-- JWT tokens with short expiry
-- HTTP-only cookies for refresh tokens
+- JWT tokens with secure expiration (15m access, 7d refresh)
+- HTTP-only cookies for authentication tokens
 - CORS configured for production
+- Input validation and sanitization
+- No third-party OAuth dependencies
 
 ## 📄 License
 
