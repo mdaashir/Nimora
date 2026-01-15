@@ -140,7 +140,7 @@ Transform Nimora from Python/FastAPI + React into a unified full-stack JavaScrip
 
 ### Phase 7: Migration & Documentation
 
-- [ ] Create API documentation
+- [x] Create API documentation (Swagger at /api/docs)
 - [x] Create developer setup guide
 - [x] Create deployment guide
 - [ ] Test full application workflow
