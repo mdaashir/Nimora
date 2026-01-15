@@ -148,7 +148,7 @@ export default function TimetablePage() {
             </div>
           ) : (
             <div className="text-center py-8">
-              <span className="text-4xl">📚</span>
+              <span className="text-4xl">�</span>
               <p className="mt-4 text-slate-400">No upcoming exams scheduled</p>
             </div>
           )}

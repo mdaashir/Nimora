@@ -58,7 +58,7 @@ export default function FeedbackPage() {
       <Card className="bg-yellow-500/10 border-yellow-500/50">
         <CardContent className="p-4">
           <div className="flex items-start gap-3">
-            <span className="text-2xl">⚠️</span>
+            <span className="text-2xl">⚠</span>
             <div>
               <h3 className="font-semibold text-yellow-400">Important Notice</h3>
               <p className="text-sm text-yellow-200/80">

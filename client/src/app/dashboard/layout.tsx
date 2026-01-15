@@ -10,7 +10,7 @@ interface DashboardLayoutProps {
 }
 
 const navItems = [
-  { href: '/dashboard', label: 'Overview', icon: '📊' },
+  { href: '/dashboard', label: 'Overview', icon: 'BarChart3' },
   { href: '/dashboard/attendance', label: 'Attendance', icon: '📅' },
   { href: '/dashboard/cgpa', label: 'CGPA', icon: '📈' },
   { href: '/dashboard/timetable', label: 'Timetable', icon: '📋' },
