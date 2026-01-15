@@ -1,0 +1,107 @@
+// Prisma Schema for Nimora
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User model - stores authenticated users
+model User {
+  id                    String    @id @default(uuid())
+  email                 String    @unique
+  name                  String?
+  avatarUrl             String?
+  googleId              String?   @unique
+
+  // Encrypted eCampus credentials (for scraping)
+  encryptedRollNo       String?
+  encryptedPassword     String?
+
+  // Timestamps
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  lastLoginAt           DateTime?
+
+  // Relations
+  attendanceCache       AttendanceCache[]
+  cgpaCache             CgpaCache[]
+
+  @@map("users")
+}
+
+// Attendance cache - stores scraped attendance data
+model AttendanceCache {
+  id              String    @id @default(uuid())
+  userId          String
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Cached data (JSON stored as string)
+  data            String    @db.Text
+  overallPercent  Float?
+
+  // Cache metadata
+  cachedAt        DateTime  @default(now())
+  expiresAt       DateTime
+
+  @@unique([userId])
+  @@index([userId])
+  @@index([expiresAt])
+  @@map("attendance_cache")
+}
+
+// CGPA cache - stores scraped CGPA data
+model CgpaCache {
+  id              String    @id @default(uuid())
+  userId          String
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Cached data (JSON stored as string)
+  data            String    @db.Text
+  currentCgpa     Float?
+
+  // Cache metadata
+  cachedAt        DateTime  @default(now())
+  expiresAt       DateTime
+
+  @@unique([userId])
+  @@index([userId])
+  @@index([expiresAt])
+  @@map("cgpa_cache")
+}
+
+// Session model - for refresh tokens
+model Session {
+  id            String    @id @default(uuid())
+  userId        String
+  refreshToken  String    @unique
+  userAgent     String?
+  ipAddress     String?
+  expiresAt     DateTime
+  createdAt     DateTime  @default(now())
+
+  @@index([userId])
+  @@index([refreshToken])
+  @@index([expiresAt])
+  @@map("sessions")
+}
+
+// Audit log - for tracking user actions
+model AuditLog {
+  id          String    @id @default(uuid())
+  userId      String?
+  action      String
+  resource    String
+  details     String?   @db.Text
+  ipAddress   String?
+  userAgent   String?
+  createdAt   DateTime  @default(now())
+
+  @@index([userId])
+  @@index([action])
+  @@index([createdAt])
+  @@map("audit_logs")
+}
