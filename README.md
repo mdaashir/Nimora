@@ -42,13 +42,18 @@
 
 ```
 nimora/
-├── apps/
-│   ├── frontend/         # Next.js 15 App Router
-│   └── backend/          # NestJS API
-├── packages/
-│   ├── shared-types/     # TypeScript interfaces
-│   └── shared-utils/     # Utility functions
-└── docs/                 # Documentation
+├── client/               # Next.js 15 Frontend
+│   ├── e2e/              # Playwright E2E tests
+│   ├── src/              # Next.js App Router
+│   └── playwright.config.ts
+├── server/               # NestJS Backend
+│   ├── types/            # TypeScript interfaces
+│   ├── utils/            # Utility functions
+│   ├── src/              # NestJS modules
+│   └── prisma/           # Database schema
+├── .github/workflows/    # CI/CD pipelines
+├── .husky/               # Git hooks
+└── docker-compose.yml    # Docker deployment
 ```
 
 ## Quick Start
@@ -69,17 +74,13 @@ cd Nimora
 pnpm install
 
 # Generate Prisma client
-cd apps/backend && npx prisma generate
+cd server && npx prisma generate
 
 # Start frontend
-cd apps/frontend && pnpm dev
+pnpm dev:frontend
 
 # Start backend (in another terminal)
-cd apps/backend
-export ENCRYPTION_KEY="your-32-character-encryption-key!"
-export JWT_SECRET="your-jwt-secret-key-minimum-32-char"
-export JWT_REFRESH_SECRET="your-refresh-secret-minimum-32ch"
-pnpm dev
+pnpm dev:backend
 ```
 
 **Frontend:** http://localhost:3000

@@ -9,7 +9,7 @@ import {
   calculateBunkableClasses,
   calculateClassesNeeded,
   calculateAttendancePercentage,
-} from "@nimora/shared-utils";
+} from "@nimora/utils";
 
 const ATTENDANCE_URLS = {
   STUDENT_PERCENTAGE:
