@@ -1,0 +1,76 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build outputs
+dist/
+.next/
+out/
+build/
+
+# Environment files
+.env
+.env.local
+.env.production
+.env.*.local
+
+# IDE
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+*.log
+
+# Testing
+coverage/
+.nyc_output/
+
+# Prisma
+prisma/migrations/*_migration_lock.toml
+
+# Docker
+docker-compose.override.yml
+
+# Misc
+*.tsbuildinfo
+.eslintcache
+.prettiercache
+
+# Puppeteer
+.cache/puppeteer/
+
+# Python (legacy - to be removed)
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+*.so
+.env/
+venv/
+ENV/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+
+# Secrets (never commit these)
+*.pem
+*.key
+secrets/
