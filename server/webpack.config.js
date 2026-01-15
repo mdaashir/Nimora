@@ -34,8 +34,8 @@ module.exports = (options, webpack) => {
       ...options.resolve,
       alias: {
         ...options.resolve?.alias,
-        '@nimora/shared-types': path.resolve(__dirname, '../../packages/shared-types/src'),
-        '@nimora/shared-utils': path.resolve(__dirname, '../../packages/shared-utils/src'),
+        '@nimora/shared-types': path.resolve(__dirname, 'shared-types/src'),
+        '@nimora/shared-utils': path.resolve(__dirname, 'shared-utils/src'),
       },
     },
     externals: filteredExternals,

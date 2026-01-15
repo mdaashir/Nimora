@@ -9,15 +9,14 @@ RUN corepack enable && corepack prepare pnpm@9.15.0 --activate
 # Copy package files
 COPY package.json pnpm-lock.yaml* pnpm-workspace.yaml ./
 COPY server/package.json ./server/
-COPY packages/shared-types/package.json ./packages/shared-types/
-COPY packages/shared-utils/package.json ./packages/shared-utils/
+COPY server/shared-types/package.json ./server/shared-types/
+COPY server/shared-utils/package.json ./server/shared-utils/
 
 # Install dependencies
 RUN pnpm install --frozen-lockfile
 
 # Copy source code
 COPY server ./server
-COPY packages ./packages
 
 # Generate Prisma client
 WORKDIR /app/server
