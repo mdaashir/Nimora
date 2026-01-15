@@ -4,6 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma/prisma.service';
 import { UsersService } from '../users/users.service';
+import { CryptoService } from './crypto.service';
 import { LoginDto } from './dto/login.dto';
 import { AuthTokensResponseDto } from './dto/auth-tokens-response.dto';
 import { JwtPayload } from './interfaces/jwt-payload.interface';
@@ -17,6 +18,7 @@ export class AuthService {
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
+    private readonly cryptoService: CryptoService,
   ) {}
 
   /**
@@ -182,5 +184,65 @@ export class AuthService {
    */
   async comparePasswords(password: string, hash: string): Promise<boolean> {
     return bcrypt.compare(password, hash);
+  }
+
+  /**
+   * Login with Google OAuth - creates tokens for authenticated user
+   */
+  async loginWithGoogle(googleUser: {
+    id: string;
+    email: string;
+    name: string;
+    avatarUrl: string;
+  }): Promise<AuthTokensResponseDto> {
+    // User should already exist from GoogleStrategy validation
+    const user = await this.prisma.user.findUnique({
+      where: { id: googleUser.id },
+    });
+
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+
+    // Generate tokens
+    const tokens = await this.generateTokens(user.id, user.email);
+
+    // Update last login
+    await this.prisma.user.update({
+      where: { id: user.id },
+      data: { lastLoginAt: new Date() },
+    });
+
+    this.logger.log(`User logged in via Google: ${user.email}`);
+
+    return {
+      ...tokens,
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        avatarUrl: user.avatarUrl,
+      },
+    };
+  }
+
+  /**
+   * Encrypt eCampus credentials for storage
+   */
+  encryptCredentials(rollno: string, password: string): { encryptedRollno: string; encryptedPassword: string } {
+    return {
+      encryptedRollno: this.cryptoService.encrypt(rollno),
+      encryptedPassword: this.cryptoService.encrypt(password),
+    };
+  }
+
+  /**
+   * Decrypt eCampus credentials for scraping
+   */
+  decryptCredentials(encryptedRollno: string, encryptedPassword: string): { rollno: string; password: string } {
+    return {
+      rollno: this.cryptoService.decrypt(encryptedRollno),
+      password: this.cryptoService.decrypt(encryptedPassword),
+    };
   }
 }

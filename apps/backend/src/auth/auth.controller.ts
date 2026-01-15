@@ -9,7 +9,7 @@ import {
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiExcludeEndpoint } from '@nestjs/swagger';
 import { Response, Request } from 'express';
 import { ConfigService } from '@nestjs/config';
 import { AuthService } from './auth.service';
@@ -17,6 +17,7 @@ import { LoginDto } from './dto/login.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { AuthTokensResponseDto } from './dto/auth-tokens-response.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { GoogleAuthGuard } from './guards/google-auth.guard';
 import { CurrentUser } from './decorators/current-user.decorator';
 import { Public } from './decorators/public.decorator';
 
@@ -129,5 +130,45 @@ export class AuthController {
       name: user.name,
       avatarUrl: user.avatarUrl,
     };
+  }
+
+  // Google OAuth endpoints
+  @Get('google')
+  @Public()
+  @UseGuards(GoogleAuthGuard)
+  @ApiOperation({ summary: 'Initiate Google OAuth login' })
+  @ApiResponse({ status: 302, description: 'Redirect to Google' })
+  async googleAuth() {
+    // Guard redirects to Google
+  }
+
+  @Get('google/callback')
+  @Public()
+  @UseGuards(GoogleAuthGuard)
+  @ApiExcludeEndpoint()
+  async googleAuthCallback(
+    @Req() request: Request,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    // User is attached to request by GoogleAuthGuard
+    const googleUser = request.user as { id: string; email: string; name: string; avatarUrl: string };
+
+    // Generate tokens for the Google-authenticated user
+    const tokens = await this.authService.loginWithGoogle(googleUser);
+
+    // Set cookies
+    response.cookie('access_token', tokens.accessToken, {
+      ...COOKIE_OPTIONS,
+      maxAge: 15 * 60 * 1000,
+    });
+
+    response.cookie('refresh_token', tokens.refreshToken, {
+      ...COOKIE_OPTIONS,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    // Redirect to frontend
+    const frontendUrl = this.configService.get<string>('FRONTEND_URL') || 'http://localhost:3000';
+    response.redirect(`${frontendUrl}/auth/callback?success=true`);
   }
 }
