@@ -157,15 +157,15 @@ pnpm test:coverage
 ## Performance
 
 - Bundle Optimization: Code splitting, tree shaking, SWC minification
-- **Image Optimization:** AVIF/WebP support, responsive images
-- **Caching:** Redis for session and data caching
-- **Security Headers:** HSTS, CSP-ready, X-Content-Type-Options
-- **Compression:** Gzip enabled for responses
-- **Static Generation:** 13/13 pages pre-rendered
+- Image Optimization: AVIF/WebP support, responsive images
+- Caching: Redis for session and data caching
+- Security Headers: HSTS, CSP-ready, X-Content-Type-Options
+- Compression: Gzip enabled for responses
+- Static Generation: 13/13 pages pre-rendered
 
 ## License
 
-MITicense - see [LICENSE](LICENSE) for details.
+MIT - See [LICENSE](LICENSE) for details.
 
 ---
 
