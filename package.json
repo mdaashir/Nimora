@@ -20,7 +20,8 @@
         "test:e2e:ui": "playwright test --ui",
         "test:coverage": "pnpm --parallel -r run test:coverage",
         "lint": "pnpm --parallel -r run lint",
-        "test": "pnpm --parallel -r run test",
+        "format": "pnpm --parallel -r run format",
+        "prepare": "husky install",
         "docker:up": "docker-compose up -d",
         "docker:up:dev": "docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d",
         "docker:down": "docker-compose down",
@@ -44,6 +45,10 @@
     ],
     "author": "mdaashir",
     "license": "MIT",
+    "devDependencies": {
+        "husky": "^9.0.0",
+        "lint-staged": "^15.2.0"
+    },
     "engines": {
         "node": ">=20.0.0",
         "pnpm": ">=9.0.0"
