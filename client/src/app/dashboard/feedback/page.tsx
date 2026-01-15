@@ -135,25 +135,25 @@ export default function FeedbackPage() {
         <CardContent>
           <ol className="space-y-3 text-slate-300">
             <li className="flex items-start gap-3">
-              <span className="flex-shrink-0 w-6 h-6 flex items-center justify-center bg-purple-500/20 text-purple-400 rounded-full text-sm">
+              <span className="shrink-0 w-6 h-6 flex items-center justify-center bg-purple-500/20 text-purple-400 rounded-full text-sm">
                 1
               </span>
               <span>Select your preferred rating from the options above</span>
             </li>
             <li className="flex items-start gap-3">
-              <span className="flex-shrink-0 w-6 h-6 flex items-center justify-center bg-purple-500/20 text-purple-400 rounded-full text-sm">
+              <span className="shrink-0 w-6 h-6 flex items-center justify-center bg-purple-500/20 text-purple-400 rounded-full text-sm">
                 2
               </span>
               <span>Click the submit button to auto-fill feedback for all courses</span>
             </li>
             <li className="flex items-start gap-3">
-              <span className="flex-shrink-0 w-6 h-6 flex items-center justify-center bg-purple-500/20 text-purple-400 rounded-full text-sm">
+              <span className="shrink-0 w-6 h-6 flex items-center justify-center bg-purple-500/20 text-purple-400 rounded-full text-sm">
                 3
               </span>
               <span>The system will navigate to each course feedback page and submit the rating</span>
             </li>
             <li className="flex items-start gap-3">
-              <span className="flex-shrink-0 w-6 h-6 flex items-center justify-center bg-purple-500/20 text-purple-400 rounded-full text-sm">
+              <span className="shrink-0 w-6 h-6 flex items-center justify-center bg-purple-500/20 text-purple-400 rounded-full text-sm">
                 4
               </span>
               <span>Wait for the process to complete - this may take a few minutes</span>

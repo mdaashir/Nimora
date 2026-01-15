@@ -30,11 +30,11 @@ export default function CGPAPage() {
       </div>
 
       {/* Current CGPA */}
-      <Card className="bg-gradient-to-br from-slate-800/50 to-purple-900/30 border-slate-700">
+      <Card className="bg-linear-to-br from-slate-800/50 to-purple-900/30 border-slate-700">
         <CardContent className="pt-6">
           <div className="text-center">
             <p className="text-slate-400 mb-2">Current CGPA</p>
-            <div className="text-7xl font-bold bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
+            <div className="text-7xl font-bold bg-linear-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
               {isLoading ? '...' : data?.currentCGPA?.toFixed(2) ?? '--'}
             </div>
             <div className="mt-4 flex justify-center gap-8 text-sm">
