@@ -1,22 +1,22 @@
-import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import * as crypto from 'crypto';
+import { Injectable } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
+import * as crypto from "crypto";
 
 @Injectable()
 export class CryptoService {
-  private readonly algorithm = 'aes-256-gcm';
+  private readonly algorithm = "aes-256-gcm";
   private readonly keyLength = 32;
   private readonly ivLength = 16;
   private readonly tagLength = 16;
   private readonly key: Buffer;
 
   constructor(private readonly configService: ConfigService) {
-    const encryptionKey = this.configService.get<string>('ENCRYPTION_KEY');
+    const encryptionKey = this.configService.get<string>("ENCRYPTION_KEY");
     if (!encryptionKey || encryptionKey.length < 32) {
-      throw new Error('ENCRYPTION_KEY must be at least 32 characters long');
+      throw new Error("ENCRYPTION_KEY must be at least 32 characters long");
     }
     // Derive a proper key from the config key
-    this.key = crypto.scryptSync(encryptionKey, 'nimora-salt', this.keyLength);
+    this.key = crypto.scryptSync(encryptionKey, "nimora-salt", this.keyLength);
   }
 
   /**
@@ -27,13 +27,13 @@ export class CryptoService {
     const iv = crypto.randomBytes(this.ivLength);
     const cipher = crypto.createCipheriv(this.algorithm, this.key, iv);
 
-    let encrypted = cipher.update(plaintext, 'utf8', 'base64');
-    encrypted += cipher.final('base64');
+    let encrypted = cipher.update(plaintext, "utf8", "base64");
+    encrypted += cipher.final("base64");
 
     const authTag = cipher.getAuthTag();
 
     // Combine iv, auth tag, and encrypted data
-    return `${iv.toString('base64')}:${authTag.toString('base64')}:${encrypted}`;
+    return `${iv.toString("base64")}:${authTag.toString("base64")}:${encrypted}`;
   }
 
   /**
@@ -41,20 +41,20 @@ export class CryptoService {
    * Input format: base64 encoded iv:tag:encrypted
    */
   decrypt(encryptedData: string): string {
-    const [ivBase64, tagBase64, encrypted] = encryptedData.split(':');
+    const [ivBase64, tagBase64, encrypted] = encryptedData.split(":");
 
     if (!ivBase64 || !tagBase64 || !encrypted) {
-      throw new Error('Invalid encrypted data format');
+      throw new Error("Invalid encrypted data format");
     }
 
-    const iv = Buffer.from(ivBase64, 'base64');
-    const authTag = Buffer.from(tagBase64, 'base64');
+    const iv = Buffer.from(ivBase64, "base64");
+    const authTag = Buffer.from(tagBase64, "base64");
 
     const decipher = crypto.createDecipheriv(this.algorithm, this.key, iv);
     decipher.setAuthTag(authTag);
 
-    let decrypted = decipher.update(encrypted, 'base64', 'utf8');
-    decrypted += decipher.final('utf8');
+    let decrypted = decipher.update(encrypted, "base64", "utf8");
+    decrypted += decipher.final("utf8");
 
     return decrypted;
   }
@@ -63,14 +63,14 @@ export class CryptoService {
    * Hash a value with SHA-256
    */
   hash(value: string): string {
-    return crypto.createHash('sha256').update(value).digest('hex');
+    return crypto.createHash("sha256").update(value).digest("hex");
   }
 
   /**
    * Generate a secure random token
    */
   generateToken(length: number = 32): string {
-    return crypto.randomBytes(length).toString('hex');
+    return crypto.randomBytes(length).toString("hex");
   }
 
   /**

@@ -1,9 +1,9 @@
-import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
-import puppeteer, { Browser, Page } from 'puppeteer';
+import { Injectable, Logger, UnauthorizedException } from "@nestjs/common";
+import puppeteer, { Browser, Page } from "puppeteer";
 
 const ECAMPUS_URLS = {
-  STUDZONE: 'https://ecampus.psgtech.ac.in/studzone',
-  STUDZONE2: 'https://ecampus.psgtech.ac.in/studzone2/',
+  STUDZONE: "https://ecampus.psgtech.ac.in/studzone",
+  STUDZONE2: "https://ecampus.psgtech.ac.in/studzone2/",
 };
 
 @Injectable()
@@ -17,11 +17,11 @@ export class EcampusAuthService {
     return puppeteer.launch({
       headless: true,
       args: [
-        '--no-sandbox',
-        '--disable-setuid-sandbox',
-        '--disable-dev-shm-usage',
-        '--disable-gpu',
-        '--disable-software-rasterizer',
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--disable-dev-shm-usage",
+        "--disable-gpu",
+        "--disable-software-rasterizer",
       ],
     });
   }
@@ -40,12 +40,12 @@ export class EcampusAuthService {
       // Set viewport and user agent
       await page.setViewport({ width: 1280, height: 800 });
       await page.setUserAgent(
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
       );
 
       // Navigate to login page
       await page.goto(ECAMPUS_URLS.STUDZONE, {
-        waitUntil: 'networkidle2',
+        waitUntil: "networkidle2",
         timeout: 30000,
       });
 
@@ -58,19 +58,19 @@ export class EcampusAuthService {
 
       // Submit form
       await Promise.all([
-        page.waitForNavigation({ waitUntil: 'networkidle2' }),
+        page.waitForNavigation({ waitUntil: "networkidle2" }),
         page.click('input[type="submit"]'),
       ]);
 
       // Check for login error
       const pageContent = await page.content();
       if (
-        pageContent.includes('Invalid') ||
-        pageContent.includes('incorrect') ||
-        pageContent.includes('error')
+        pageContent.includes("Invalid") ||
+        pageContent.includes("incorrect") ||
+        pageContent.includes("error")
       ) {
         await browser.close();
-        throw new UnauthorizedException('Invalid eCampus credentials');
+        throw new UnauthorizedException("Invalid eCampus credentials");
       }
 
       this.logger.log(`Successfully logged into studzone for ${rollno}`);
@@ -94,11 +94,11 @@ export class EcampusAuthService {
     try {
       await page.setViewport({ width: 1280, height: 800 });
       await page.setUserAgent(
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
       );
 
       await page.goto(ECAMPUS_URLS.STUDZONE2, {
-        waitUntil: 'networkidle2',
+        waitUntil: "networkidle2",
         timeout: 30000,
       });
 
@@ -109,17 +109,17 @@ export class EcampusAuthService {
 
       // Submit
       await Promise.all([
-        page.waitForNavigation({ waitUntil: 'networkidle2' }),
+        page.waitForNavigation({ waitUntil: "networkidle2" }),
         page.click('input[type="submit"]'),
       ]);
 
       const pageContent = await page.content();
       if (
-        pageContent.includes('Invalid') ||
-        pageContent.includes('incorrect')
+        pageContent.includes("Invalid") ||
+        pageContent.includes("incorrect")
       ) {
         await browser.close();
-        throw new UnauthorizedException('Invalid eCampus credentials');
+        throw new UnauthorizedException("Invalid eCampus credentials");
       }
 
       this.logger.log(`Successfully logged into studzone2 for ${rollno}`);
@@ -137,7 +137,7 @@ export class EcampusAuthService {
     try {
       await browser.close();
     } catch (error) {
-      this.logger.warn('Error closing browser:', error);
+      this.logger.warn("Error closing browser:", error);
     }
   }
 }

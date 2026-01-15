@@ -1,13 +1,13 @@
-import { Injectable, UnauthorizedException, Logger } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { ConfigService } from '@nestjs/config';
-import * as bcrypt from 'bcrypt';
-import { PrismaService } from '../prisma/prisma.service';
-import { UsersService } from '../users/users.service';
-import { CryptoService } from './crypto.service';
-import { LoginDto } from './dto/login.dto';
-import { AuthTokensResponseDto } from './dto/auth-tokens-response.dto';
-import { JwtPayload } from './interfaces/jwt-payload.interface';
+import { Injectable, UnauthorizedException, Logger } from "@nestjs/common";
+import { JwtService } from "@nestjs/jwt";
+import { ConfigService } from "@nestjs/config";
+import * as bcrypt from "bcrypt";
+import { PrismaService } from "../prisma/prisma.service";
+import { UsersService } from "../users/users.service";
+import { CryptoService } from "./crypto.service";
+import { LoginDto } from "./dto/login.dto";
+import { AuthTokensResponseDto } from "./dto/auth-tokens-response.dto";
+import { JwtPayload } from "./interfaces/jwt-payload.interface";
 
 @Injectable()
 export class AuthService {
@@ -31,7 +31,7 @@ export class AuthService {
     let user = await this.prisma.user.findFirst({
       where: {
         OR: [
-          { email: email || '' },
+          { email: email || "" },
           // Check if rollno matches encrypted value (would need decryption in real scenario)
         ],
       },
@@ -42,13 +42,13 @@ export class AuthService {
       user = await this.prisma.user.create({
         data: {
           email,
-          name: rollno || email.split('@')[0],
+          name: rollno || email.split("@")[0],
         },
       });
     }
 
     if (!user) {
-      throw new UnauthorizedException('Invalid credentials');
+      throw new UnauthorizedException("Invalid credentials");
     }
 
     // Generate tokens
@@ -83,7 +83,7 @@ export class AuthService {
     });
 
     if (!session || session.expiresAt < new Date()) {
-      throw new UnauthorizedException('Invalid or expired refresh token');
+      throw new UnauthorizedException("Invalid or expired refresh token");
     }
 
     // Find user
@@ -92,7 +92,7 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new UnauthorizedException('User not found');
+      throw new UnauthorizedException("User not found");
     }
 
     // Delete old session
@@ -132,7 +132,7 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new UnauthorizedException('User not found');
+      throw new UnauthorizedException("User not found");
     }
 
     return user;
@@ -145,15 +145,15 @@ export class AuthService {
     userId: string,
     email: string,
   ): Promise<{ accessToken: string; refreshToken: string }> {
-    const payload: JwtPayload = { sub: userId, email };
+    const payload = { sub: userId, email };
 
     // Generate access token
     const accessToken = this.jwtService.sign(payload);
 
-    // Generate refresh token
+    // Generate refresh token with different secret/expiration
     const refreshToken = this.jwtService.sign(payload, {
-      secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
-      expiresIn: this.configService.get<string>('JWT_REFRESH_EXPIRATION') || '7d',
+      secret: this.configService.get<string>("JWT_REFRESH_SECRET"),
+      expiresIn: "7d",
     });
 
     // Store refresh token in database
@@ -201,7 +201,7 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new UnauthorizedException('User not found');
+      throw new UnauthorizedException("User not found");
     }
 
     // Generate tokens
@@ -229,7 +229,10 @@ export class AuthService {
   /**
    * Encrypt eCampus credentials for storage
    */
-  encryptCredentials(rollno: string, password: string): { encryptedRollno: string; encryptedPassword: string } {
+  encryptCredentials(
+    rollno: string,
+    password: string,
+  ): { encryptedRollno: string; encryptedPassword: string } {
     return {
       encryptedRollno: this.cryptoService.encrypt(rollno),
       encryptedPassword: this.cryptoService.encrypt(password),
@@ -239,7 +242,10 @@ export class AuthService {
   /**
    * Decrypt eCampus credentials for scraping
    */
-  decryptCredentials(encryptedRollno: string, encryptedPassword: string): { rollno: string; password: string } {
+  decryptCredentials(
+    encryptedRollno: string,
+    encryptedPassword: string,
+  ): { rollno: string; password: string } {
     return {
       rollno: this.cryptoService.decrypt(encryptedRollno),
       password: this.cryptoService.decrypt(encryptedPassword),

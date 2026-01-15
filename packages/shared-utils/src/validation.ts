@@ -2,12 +2,13 @@
 
 /**
  * Validate roll number format (PSG Tech format)
- * Format: 2 digits year + 2 letters department + 3 digits number
- * Example: 22CS001, 23IT045
+ * Format: 2 digits year + 1-2 letters department + 3 digits number
+ * Examples: 22Z209, 21z101, 22CS001, 23IT045
  */
 export function isValidRollNumber(rollNo: string): boolean {
   if (!rollNo || typeof rollNo !== 'string') return false;
-  const pattern = /^\d{2}[A-Z]{2}\d{3}$/i;
+  // Accept both formats: 22Z209 (1 letter) and 22CS001 (2 letters)
+  const pattern = /^\d{2}[A-Z]{1,2}\d{3}$/i;
   return pattern.test(rollNo.trim());
 }
 

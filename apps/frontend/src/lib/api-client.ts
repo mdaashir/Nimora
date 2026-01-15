@@ -74,8 +74,9 @@ export async function handleApiResponse<T>(
   return data.data as T;
 }
 
-// Export the client
+// Export the client as both default and named export
 export default apiClient;
+export { apiClient };
 
 // Export types for convenience
 export type { AxiosError, AxiosInstance };

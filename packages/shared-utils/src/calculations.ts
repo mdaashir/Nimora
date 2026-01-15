@@ -91,13 +91,20 @@ export function calculateRequiredEndsem(
   targetTotal: number = 50,
   endsemMax: number = 60
 ): number | null {
-  // Normalize internal to 40
+  // Normalize internal to 40 (40% weightage)
   const normalizedInternal = (internalMarks / maxInternal) * 40;
+
+  // Max possible endsem contribution is 60 (60% weightage)
+  const maxEndsemContribution = 60;
+
+  // Check if target is achievable
+  const maxPossible = normalizedInternal + maxEndsemContribution;
+  if (targetTotal > maxPossible) return null; // Not achievable
+
   const requiredEndsem = targetTotal - normalizedInternal;
 
   if (requiredEndsem <= 0) return 0;
-  if (requiredEndsem > endsemMax) return null; // Not achievable
 
-  // Convert to percentage of 60
-  return Math.ceil((requiredEndsem / 60) * 100);
+  // Convert required marks to percentage of actual endsem max
+  return Math.ceil((requiredEndsem / 60) * endsemMax);
 }

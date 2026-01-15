@@ -1,13 +1,14 @@
-import { Injectable, Inject } from '@nestjs/common';
-import { CACHE_MANAGER } from '@nestjs/cache-manager';
-import { Cache } from 'cache-manager';
+import { Injectable, Inject } from "@nestjs/common";
+import { CACHE_MANAGER } from "@nestjs/cache-manager";
+import { Cache } from "cache-manager";
 
 @Injectable()
 export class NimoraCacheService {
   constructor(@Inject(CACHE_MANAGER) private cacheManager: Cache) {}
 
   async get<T>(key: string): Promise<T | undefined> {
-    return this.cacheManager.get<T>(key);
+    const value = await this.cacheManager.get<T>(key);
+    return value ?? undefined;
   }
 
   async set<T>(key: string, value: T, ttl?: number): Promise<void> {
@@ -18,8 +19,9 @@ export class NimoraCacheService {
     await this.cacheManager.del(key);
   }
 
-  async reset(): Promise<void> {
-    await this.cacheManager.reset();
+  async clear(): Promise<void> {
+    // Clear all keys - using store method if available
+    await this.cacheManager.clear();
   }
 
   /**

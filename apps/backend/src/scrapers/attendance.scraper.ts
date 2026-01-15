@@ -1,16 +1,20 @@
-import { Injectable, Logger } from '@nestjs/common';
-import * as cheerio from 'cheerio';
-import { EcampusAuthService } from './ecampus-auth.service';
-import type { AttendanceResponse, CourseAttendance } from '@nimora/shared-types';
+import { Injectable, Logger } from "@nestjs/common";
+import * as cheerio from "cheerio";
+import { EcampusAuthService } from "./ecampus-auth.service";
+import type {
+  AttendanceResponse,
+  CourseAttendance,
+} from "@nimora/shared-types";
 import {
   calculateBunkableClasses,
   calculateClassesNeeded,
   calculateAttendancePercentage,
-} from '@nimora/shared-utils';
+} from "@nimora/shared-utils";
 
 const ATTENDANCE_URLS = {
-  STUDENT_PERCENTAGE: 'https://ecampus.psgtech.ac.in/studzone/Attendance/StudentPercentage',
-  COURSE_PLAN: 'https://ecampus.psgtech.ac.in/studzone/Attendance/courseplan',
+  STUDENT_PERCENTAGE:
+    "https://ecampus.psgtech.ac.in/studzone/Attendance/StudentPercentage",
+  COURSE_PLAN: "https://ecampus.psgtech.ac.in/studzone/Attendance/courseplan",
 };
 
 @Injectable()
@@ -38,7 +42,7 @@ export class AttendanceScraperService {
 
       // Navigate to attendance page
       await page.goto(ATTENDANCE_URLS.STUDENT_PERCENTAGE, {
-        waitUntil: 'networkidle2',
+        waitUntil: "networkidle2",
         timeout: 30000,
       });
 
@@ -53,7 +57,10 @@ export class AttendanceScraperService {
       const courses = this.extractAttendanceTable($, threshold, courseMap);
 
       // Calculate overall percentage
-      const totalAttended = courses.reduce((sum, c) => sum + c.attendedClasses, 0);
+      const totalAttended = courses.reduce(
+        (sum, c) => sum + c.attendedClasses,
+        0,
+      );
       const totalClasses = courses.reduce((sum, c) => sum + c.totalClasses, 0);
       const overallPercentage = calculateAttendancePercentage(
         totalAttended,
@@ -77,7 +84,7 @@ export class AttendanceScraperService {
    */
   private async getCourseNames(page: any): Promise<Map<string, string>> {
     await page.goto(ATTENDANCE_URLS.COURSE_PLAN, {
-      waitUntil: 'networkidle2',
+      waitUntil: "networkidle2",
       timeout: 30000,
     });
 
@@ -86,9 +93,9 @@ export class AttendanceScraperService {
     const courseMap = new Map<string, string>();
 
     // Extract course details from col-md-8 divs
-    $('div.col-md-8').each((_, div) => {
-      const courseCode = $(div).find('h5').text().trim();
-      const courseName = $(div).find('h6').text().trim();
+    $("div.col-md-8").each((_, div) => {
+      const courseCode = $(div).find("h5").text().trim();
+      const courseName = $(div).find("h6").text().trim();
 
       if (courseCode && courseName) {
         // Get initials from course name (first letter of each word)
@@ -96,7 +103,7 @@ export class AttendanceScraperService {
           .split(/\s+/)
           .filter((word) => word.length > 0 && word[0].match(/[A-Z]/))
           .map((word) => word[0])
-          .join('');
+          .join("");
 
         courseMap.set(courseCode, initials);
       }
@@ -112,10 +119,10 @@ export class AttendanceScraperService {
   private extractStudentName($: cheerio.CheerioAPI): string {
     // Try different selectors based on eCampus structure
     const nameElement =
-      $('span.student-name').first().text() ||
+      $("span.student-name").first().text() ||
       $('td:contains("Name")').next().text() ||
-      $('h4.student-name').first().text() ||
-      'Student';
+      $("h4.student-name").first().text() ||
+      "Student";
     return nameElement.trim();
   }
 
@@ -131,10 +138,10 @@ export class AttendanceScraperService {
     const courses: CourseAttendance[] = [];
 
     // Find attendance table with id "example"
-    const table = $('table#example tbody');
+    const table = $("table#example tbody");
 
-    table.find('tr').each((_, row) => {
-      const cells = $(row).find('td');
+    table.find("tr").each((_, row) => {
+      const cells = $(row).find("td");
 
       if (cells.length >= 5) {
         // Based on Python: record[0]=course_code, record[1]=total, record[4]=present
@@ -144,14 +151,25 @@ export class AttendanceScraperService {
 
         if (courseCode && totalClasses > 0) {
           // Get course name initials from map
-          const courseInitials = courseMap.get(courseCode) || '';
+          const courseInitials = courseMap.get(courseCode) || "";
           const courseName = courseInitials
             ? `${courseCode} - ${courseInitials}`
             : courseCode;
 
-          const percentage = calculateAttendancePercentage(attendedClasses, totalClasses);
-          const canBunk = calculateBunkableClasses(attendedClasses, totalClasses, threshold);
-          const mustAttend = calculateClassesNeeded(attendedClasses, totalClasses, threshold);
+          const percentage = calculateAttendancePercentage(
+            attendedClasses,
+            totalClasses,
+          );
+          const canBunk = calculateBunkableClasses(
+            attendedClasses,
+            totalClasses,
+            threshold,
+          );
+          const mustAttend = calculateClassesNeeded(
+            attendedClasses,
+            totalClasses,
+            threshold,
+          );
 
           courses.push({
             courseCode,

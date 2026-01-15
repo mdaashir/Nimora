@@ -1,28 +1,55 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { PassportStrategy } from '@nestjs/passport';
-import { Strategy, VerifyCallback, Profile } from 'passport-google-oauth20';
-import { PrismaService } from '../../prisma/prisma.service';
+import { Injectable, Logger } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
+import { PassportStrategy } from "@nestjs/passport";
+import { Strategy, VerifyCallback, Profile } from "passport-google-oauth20";
+import { PrismaService } from "../../prisma/prisma.service";
 
+/**
+ * Google OAuth Strategy
+ * BYPASS MODE: When GOOGLE_CLIENT_ID or GOOGLE_CLIENT_SECRET is not set,
+ * Google OAuth will be disabled. Remove the bypass by setting these env vars.
+ */
 @Injectable()
-export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
+export class GoogleStrategy extends PassportStrategy(Strategy, "google") {
   private readonly logger = new Logger(GoogleStrategy.name);
+  private readonly isEnabled: boolean;
 
   constructor(
     private readonly configService: ConfigService,
     private readonly prisma: PrismaService,
   ) {
+    const clientID =
+      configService.get<string>("GOOGLE_CLIENT_ID") || "bypass-not-configured";
+    const clientSecret =
+      configService.get<string>("GOOGLE_CLIENT_SECRET") ||
+      "bypass-not-configured";
+
     super({
-      clientID: configService.get<string>('GOOGLE_CLIENT_ID'),
-      clientSecret: configService.get<string>('GOOGLE_CLIENT_SECRET'),
-      callbackURL: configService.get<string>('GOOGLE_CALLBACK_URL') || 'http://localhost:3001/api/auth/google/callback',
-      scope: ['email', 'profile'],
+      clientID,
+      clientSecret,
+      callbackURL:
+        configService.get<string>("GOOGLE_CALLBACK_URL") ||
+        "http://localhost:3001/api/auth/google/callback",
+      scope: ["email", "profile"],
     });
+
+    // Check if Google OAuth is properly configured
+    this.isEnabled =
+      clientID !== "bypass-not-configured" &&
+      clientSecret !== "bypass-not-configured";
+
+    if (!this.isEnabled) {
+      this.logger.warn(
+        "⚠️ Google OAuth is BYPASSED - GOOGLE_CLIENT_ID or GOOGLE_CLIENT_SECRET not configured",
+      );
+    } else {
+      this.logger.log("✅ Google OAuth is enabled");
+    }
   }
 
   async validate(
-    accessToken: string,
-    refreshToken: string,
+    _accessToken: string,
+    _refreshToken: string,
     profile: Profile,
     done: VerifyCallback,
   ): Promise<void> {
@@ -31,7 +58,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
       const email = emails?.[0]?.value;
 
       if (!email) {
-        return done(new Error('No email found in Google profile'), null);
+        return done(new Error("No email found in Google profile"), undefined);
       }
 
       // Check if user exists
@@ -45,8 +72,8 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
           data: {
             email,
             name: name?.givenName
-              ? `${name.givenName} ${name.familyName || ''}`.trim()
-              : email.split('@')[0],
+              ? `${name.givenName} ${name.familyName || ""}`.trim()
+              : email.split("@")[0],
             avatarUrl: photos?.[0]?.value || null,
             googleId: profile.id,
           },
@@ -70,9 +97,9 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
         name: user.name,
         avatarUrl: user.avatarUrl,
       });
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(`Google authentication error: ${error.message}`);
-      done(error, null);
+      done(error, undefined);
     }
   }
 }

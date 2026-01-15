@@ -5,9 +5,20 @@ import {
   HttpException,
   HttpStatus,
   Logger,
-} from '@nestjs/common';
-import { Request, Response } from 'express';
-import { Prisma } from '@prisma/client';
+} from "@nestjs/common";
+import { Request, Response } from "express";
+
+// Type guard for Prisma errors
+function isPrismaKnownRequestError(
+  error: unknown,
+): error is { code: string; message: string } {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    "code" in error &&
+    typeof (error as { code: string }).code === "string"
+  );
+}
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
@@ -19,50 +30,51 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const request = ctx.getRequest<Request>();
 
     let status = HttpStatus.INTERNAL_SERVER_ERROR;
-    let message = 'Internal server error';
-    let error = 'InternalServerError';
+    let message = "Internal server error";
+    let error = "InternalServerError";
 
     // Handle HTTP exceptions
     if (exception instanceof HttpException) {
       status = exception.getStatus();
       const exceptionResponse = exception.getResponse();
 
-      if (typeof exceptionResponse === 'object' && exceptionResponse !== null) {
+      if (typeof exceptionResponse === "object" && exceptionResponse !== null) {
         const responseObj = exceptionResponse as Record<string, unknown>;
         message = (responseObj.message as string) || exception.message;
-        error = (responseObj.error as string) || 'HttpException';
+        error = (responseObj.error as string) || "HttpException";
       } else {
         message = exception.message;
       }
     }
-    // Handle Prisma errors
-    else if (exception instanceof Prisma.PrismaClientKnownRequestError) {
+    // Handle Prisma known request errors
+    else if (isPrismaKnownRequestError(exception)) {
       switch (exception.code) {
-        case 'P2002':
+        case "P2002":
           status = HttpStatus.CONFLICT;
-          message = 'A record with this value already exists';
-          error = 'ConflictError';
+          message = "A record with this value already exists";
+          error = "ConflictError";
           break;
-        case 'P2025':
+        case "P2025":
           status = HttpStatus.NOT_FOUND;
-          message = 'Record not found';
-          error = 'NotFoundError';
+          message = "Record not found";
+          error = "NotFoundError";
           break;
         default:
-          message = 'Database error';
-          error = 'DatabaseError';
+          message = "Database error";
+          error = "DatabaseError";
       }
-    }
-    // Handle Prisma validation errors
-    else if (exception instanceof Prisma.PrismaClientValidationError) {
-      status = HttpStatus.BAD_REQUEST;
-      message = 'Invalid data provided';
-      error = 'ValidationError';
     }
     // Handle generic errors
     else if (exception instanceof Error) {
-      message = exception.message;
-      error = exception.name || 'Error';
+      // Check if it's a Prisma validation error by name
+      if (exception.name === "PrismaClientValidationError") {
+        status = HttpStatus.BAD_REQUEST;
+        message = "Invalid data provided";
+        error = "ValidationError";
+      } else {
+        message = exception.message;
+        error = exception.name || "Error";
+      }
     }
 
     // Log the error

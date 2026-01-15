@@ -8,41 +8,51 @@ import {
   UseGuards,
   HttpCode,
   HttpStatus,
-} from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiExcludeEndpoint } from '@nestjs/swagger';
-import { Response, Request } from 'express';
-import { ConfigService } from '@nestjs/config';
-import { AuthService } from './auth.service';
-import { LoginDto } from './dto/login.dto';
-import { RefreshTokenDto } from './dto/refresh-token.dto';
-import { AuthTokensResponseDto } from './dto/auth-tokens-response.dto';
-import { JwtAuthGuard } from './guards/jwt-auth.guard';
-import { GoogleAuthGuard } from './guards/google-auth.guard';
-import { CurrentUser } from './decorators/current-user.decorator';
-import { Public } from './decorators/public.decorator';
+} from "@nestjs/common";
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+  ApiExcludeEndpoint,
+} from "@nestjs/swagger";
+import { Response, Request } from "express";
+import { ConfigService } from "@nestjs/config";
+import { AuthService } from "./auth.service";
+import { LoginDto } from "./dto/login.dto";
+import { RefreshTokenDto } from "./dto/refresh-token.dto";
+import { AuthTokensResponseDto } from "./dto/auth-tokens-response.dto";
+import { JwtAuthGuard } from "./guards/jwt-auth.guard";
+import { GoogleAuthGuard } from "./guards/google-auth.guard";
+import { CurrentUser } from "./decorators/current-user.decorator";
+import { Public } from "./decorators/public.decorator";
 
 // Cookie configuration
 const COOKIE_OPTIONS = {
   httpOnly: true,
-  secure: process.env.NODE_ENV === 'production',
-  sameSite: 'lax' as const,
-  path: '/',
+  secure: process.env.NODE_ENV === "production",
+  sameSite: "lax" as const,
+  path: "/",
 };
 
-@ApiTags('auth')
-@Controller('auth')
+@ApiTags("auth")
+@Controller("auth")
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly configService: ConfigService,
   ) {}
 
-  @Post('login')
+  @Post("login")
   @Public()
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Login with credentials' })
-  @ApiResponse({ status: 200, description: 'Login successful', type: AuthTokensResponseDto })
-  @ApiResponse({ status: 401, description: 'Invalid credentials' })
+  @ApiOperation({ summary: "Login with credentials" })
+  @ApiResponse({
+    status: 200,
+    description: "Login successful",
+    type: AuthTokensResponseDto,
+  })
+  @ApiResponse({ status: 401, description: "Invalid credentials" })
   async login(
     @Body() loginDto: LoginDto,
     @Res({ passthrough: true }) response: Response,
@@ -50,12 +60,12 @@ export class AuthController {
     const tokens = await this.authService.login(loginDto);
 
     // Set cookies
-    response.cookie('access_token', tokens.accessToken, {
+    response.cookie("access_token", tokens.accessToken, {
       ...COOKIE_OPTIONS,
       maxAge: 15 * 60 * 1000, // 15 minutes
     });
 
-    response.cookie('refresh_token', tokens.refreshToken, {
+    response.cookie("refresh_token", tokens.refreshToken, {
       ...COOKIE_OPTIONS,
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
@@ -63,12 +73,16 @@ export class AuthController {
     return tokens;
   }
 
-  @Post('refresh')
+  @Post("refresh")
   @Public()
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Refresh access token' })
-  @ApiResponse({ status: 200, description: 'Tokens refreshed', type: AuthTokensResponseDto })
-  @ApiResponse({ status: 401, description: 'Invalid refresh token' })
+  @ApiOperation({ summary: "Refresh access token" })
+  @ApiResponse({
+    status: 200,
+    description: "Tokens refreshed",
+    type: AuthTokensResponseDto,
+  })
+  @ApiResponse({ status: 401, description: "Invalid refresh token" })
   async refresh(
     @Body() refreshTokenDto: RefreshTokenDto,
     @Req() request: Request,
@@ -81,12 +95,12 @@ export class AuthController {
     const tokens = await this.authService.refreshTokens(refreshToken);
 
     // Set new cookies
-    response.cookie('access_token', tokens.accessToken, {
+    response.cookie("access_token", tokens.accessToken, {
       ...COOKIE_OPTIONS,
       maxAge: 15 * 60 * 1000,
     });
 
-    response.cookie('refresh_token', tokens.refreshToken, {
+    response.cookie("refresh_token", tokens.refreshToken, {
       ...COOKIE_OPTIONS,
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
@@ -94,12 +108,12 @@ export class AuthController {
     return tokens;
   }
 
-  @Post('logout')
+  @Post("logout")
   @HttpCode(HttpStatus.OK)
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Logout and invalidate tokens' })
-  @ApiResponse({ status: 200, description: 'Logout successful' })
+  @ApiOperation({ summary: "Logout and invalidate tokens" })
+  @ApiResponse({ status: 200, description: "Logout successful" })
   async logout(
     @Req() request: Request,
     @Res({ passthrough: true }) response: Response,
@@ -111,18 +125,18 @@ export class AuthController {
     }
 
     // Clear cookies
-    response.clearCookie('access_token', COOKIE_OPTIONS);
-    response.clearCookie('refresh_token', COOKIE_OPTIONS);
+    response.clearCookie("access_token", COOKIE_OPTIONS);
+    response.clearCookie("refresh_token", COOKIE_OPTIONS);
 
-    return { success: true, message: 'Logged out successfully' };
+    return { success: true, message: "Logged out successfully" };
   }
 
-  @Get('profile')
+  @Get("profile")
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Get current user profile' })
-  @ApiResponse({ status: 200, description: 'User profile' })
-  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiOperation({ summary: "Get current user profile" })
+  @ApiResponse({ status: 200, description: "User profile" })
+  @ApiResponse({ status: 401, description: "Unauthorized" })
   async getProfile(@CurrentUser() user: any) {
     return {
       id: user.id,
@@ -133,16 +147,16 @@ export class AuthController {
   }
 
   // Google OAuth endpoints
-  @Get('google')
+  @Get("google")
   @Public()
   @UseGuards(GoogleAuthGuard)
-  @ApiOperation({ summary: 'Initiate Google OAuth login' })
-  @ApiResponse({ status: 302, description: 'Redirect to Google' })
+  @ApiOperation({ summary: "Initiate Google OAuth login" })
+  @ApiResponse({ status: 302, description: "Redirect to Google" })
   async googleAuth() {
     // Guard redirects to Google
   }
 
-  @Get('google/callback')
+  @Get("google/callback")
   @Public()
   @UseGuards(GoogleAuthGuard)
   @ApiExcludeEndpoint()
@@ -151,24 +165,30 @@ export class AuthController {
     @Res({ passthrough: true }) response: Response,
   ) {
     // User is attached to request by GoogleAuthGuard
-    const googleUser = request.user as { id: string; email: string; name: string; avatarUrl: string };
+    const googleUser = request.user as {
+      id: string;
+      email: string;
+      name: string;
+      avatarUrl: string;
+    };
 
     // Generate tokens for the Google-authenticated user
     const tokens = await this.authService.loginWithGoogle(googleUser);
 
     // Set cookies
-    response.cookie('access_token', tokens.accessToken, {
+    response.cookie("access_token", tokens.accessToken, {
       ...COOKIE_OPTIONS,
       maxAge: 15 * 60 * 1000,
     });
 
-    response.cookie('refresh_token', tokens.refreshToken, {
+    response.cookie("refresh_token", tokens.refreshToken, {
       ...COOKIE_OPTIONS,
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
     // Redirect to frontend
-    const frontendUrl = this.configService.get<string>('FRONTEND_URL') || 'http://localhost:3000';
+    const frontendUrl =
+      this.configService.get<string>("FRONTEND_URL") || "http://localhost:3000";
     response.redirect(`${frontendUrl}/auth/callback?success=true`);
   }
 }

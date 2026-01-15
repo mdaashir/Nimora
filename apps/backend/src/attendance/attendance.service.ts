@@ -1,7 +1,7 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
-import { AttendanceScraperService } from '../scrapers/attendance.scraper';
-import type { AttendanceResponse, CourseAttendance } from '@nimora/shared-types';
+import { Injectable, Logger } from "@nestjs/common";
+import { PrismaService } from "../prisma/prisma.service";
+import { AttendanceScraperService } from "../scrapers/attendance.scraper";
+import type { AttendanceResponse } from "@nimora/shared-types";
 
 @Injectable()
 export class AttendanceService {

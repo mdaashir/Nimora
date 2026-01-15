@@ -4,8 +4,9 @@ const nextConfig: NextConfig = {
   // Enable React Strict Mode for better development experience
   reactStrictMode: true,
 
-  // Output as standalone for Docker deployment
-  output: 'standalone',
+  // Output as standalone for Docker deployment (enable in Docker build)
+  // Note: On Windows, this requires admin privileges for symlinks
+  output: process.env.DOCKER_BUILD === 'true' ? 'standalone' : undefined,
 
   // Environment variables exposed to the browser
   env: {

@@ -1,16 +1,18 @@
-import { Injectable, Logger } from '@nestjs/common';
-import * as cheerio from 'cheerio';
-import { EcampusAuthService } from './ecampus-auth.service';
+import { Injectable, Logger } from "@nestjs/common";
+import * as cheerio from "cheerio";
+import { EcampusAuthService } from "./ecampus-auth.service";
 import type {
   ClassTimetableResponse,
   ExamScheduleResponse,
   ExamSchedule,
   TimetableSlot,
-} from '@nimora/shared-types';
+} from "@nimora/shared-types";
 
 const TIMETABLE_URLS = {
-  EXAM_SCHEDULE: 'https://ecampus.psgtech.ac.in/studzone/ContinuousAssessment/CATestTimeTable',
-  CLASS_TIMETABLE: 'https://ecampus.psgtech.ac.in/studzone/Attendance/courseplan',
+  EXAM_SCHEDULE:
+    "https://ecampus.psgtech.ac.in/studzone/ContinuousAssessment/CATestTimeTable",
+  CLASS_TIMETABLE:
+    "https://ecampus.psgtech.ac.in/studzone/Attendance/courseplan",
 };
 
 @Injectable()
@@ -37,7 +39,7 @@ export class TimetableScraperService {
 
       // Navigate to exam schedule page
       await page.goto(TIMETABLE_URLS.EXAM_SCHEDULE, {
-        waitUntil: 'networkidle2',
+        waitUntil: "networkidle2",
         timeout: 30000,
       });
 
@@ -70,7 +72,7 @@ export class TimetableScraperService {
 
     try {
       await page.goto(TIMETABLE_URLS.CLASS_TIMETABLE, {
-        waitUntil: 'networkidle2',
+        waitUntil: "networkidle2",
         timeout: 30000,
       });
 
@@ -94,7 +96,7 @@ export class TimetableScraperService {
    */
   private async getCourseNames(page: any): Promise<Map<string, string>> {
     await page.goto(TIMETABLE_URLS.CLASS_TIMETABLE, {
-      waitUntil: 'networkidle2',
+      waitUntil: "networkidle2",
       timeout: 30000,
     });
 
@@ -102,16 +104,16 @@ export class TimetableScraperService {
     const $ = cheerio.load(content);
     const courseMap = new Map<string, string>();
 
-    $('div.col-md-8').each((_, div) => {
-      const courseCode = $(div).find('h5').text().trim();
-      const courseName = $(div).find('h6').text().trim();
+    $("div.col-md-8").each((_, div) => {
+      const courseCode = $(div).find("h5").text().trim();
+      const courseName = $(div).find("h6").text().trim();
 
       if (courseCode && courseName) {
         const initials = courseName
           .split(/\s+/)
           .filter((word) => word.length > 0 && word[0].match(/[A-Z]/))
           .map((word) => word[0])
-          .join('');
+          .join("");
 
         courseMap.set(courseCode, initials);
       }
@@ -131,22 +133,23 @@ export class TimetableScraperService {
     const exams: ExamSchedule[] = [];
 
     // Check for presence of schedule content
-    const hasContent = $('div.Test-card').length > 0 ||
-      $('div.test-card').length > 0 ||
-      $('div.exam-card').length > 0;
+    const hasContent =
+      $("div.Test-card").length > 0 ||
+      $("div.test-card").length > 0 ||
+      $("div.exam-card").length > 0;
 
     if (!hasContent) {
-      this.logger.warn('No exam schedule content found');
+      this.logger.warn("No exam schedule content found");
       return exams;
     }
 
     // Try multiple selectors for exam containers
-    let examContainers = $('div.text-left');
+    let examContainers = $("div.text-left");
     if (examContainers.length === 0) {
-      examContainers = $('div.exam-item');
+      examContainers = $("div.exam-item");
     }
     if (examContainers.length === 0) {
-      examContainers = $('div.card');
+      examContainers = $("div.card");
     }
 
     this.logger.log(`Found ${examContainers.length} exam containers`);
@@ -160,13 +163,13 @@ export class TimetableScraperService {
       let timeStr: string | null = null;
 
       // Look for span.sol elements (based on Python)
-      const spans = examEl.find('span.sol');
+      const spans = examEl.find("span.sol");
       if (spans.length > 0) {
-        courseCode = $(spans[0]).text().trim().replace(/^:/, '').trim();
+        courseCode = $(spans[0]).text().trim().replace(/^:/, "").trim();
 
         spans.each((i, span) => {
           if (i === 0) return;
-          const text = $(span).text().trim().replace(/^:/, '').trim();
+          const text = $(span).text().trim().replace(/^:/, "").trim();
 
           if (this.isDate(text)) {
             dateStr = text;
@@ -181,20 +184,22 @@ export class TimetableScraperService {
         const fullText = examEl.text();
 
         // Look for date patterns
-        const dateMatch = fullText.match(/(\d{1,2}[/\-\.]\d{1,2}[/\-\.]\d{2,4})/);
+        const dateMatch = fullText.match(/(\d{1,2}[/\-.]\d{1,2}[/\-.]\d{2,4})/);
         if (dateMatch && !dateStr) {
           dateStr = dateMatch[1];
         }
 
         // Look for time patterns
-        const timeMatch = fullText.match(/(\d{1,2}:\d{2}(?:\s*(?:AM|PM|am|pm))?)/);
+        const timeMatch = fullText.match(
+          /(\d{1,2}:\d{2}(?:\s*(?:AM|PM|am|pm))?)/,
+        );
         if (timeMatch && !timeStr) {
           timeStr = timeMatch[1];
         }
       }
 
       if (courseCode && dateStr) {
-        const courseInitials = courseMap.get(courseCode) || '';
+        const courseInitials = courseMap.get(courseCode) || "";
         const courseName = courseInitials
           ? `${courseCode} - ${courseInitials}`
           : courseCode;
@@ -203,8 +208,8 @@ export class TimetableScraperService {
           courseCode,
           courseName,
           date: dateStr,
-          time: timeStr || 'TBD',
-          venue: '', // Can be extracted if available
+          time: timeStr || "TBD",
+          venue: "", // Can be extracted if available
         });
       }
     });
@@ -215,7 +220,9 @@ export class TimetableScraperService {
   /**
    * Extract class timetable
    */
-  private extractClassTimetable($: cheerio.CheerioAPI): Record<string, TimetableSlot[]> {
+  private extractClassTimetable(
+    _$: cheerio.CheerioAPI,
+  ): Record<string, TimetableSlot[]> {
     const timetable: Record<string, TimetableSlot[]> = {
       monday: [],
       tuesday: [],
@@ -236,7 +243,7 @@ export class TimetableScraperService {
    */
   private isDate(text: string): boolean {
     // Check for common date patterns
-    return /\d{1,2}[/\-\.]\d{1,2}[/\-\.]\d{2,4}/.test(text);
+    return /\d{1,2}[/\-.]\d{1,2}[/\-.]\d{2,4}/.test(text);
   }
 
   /**

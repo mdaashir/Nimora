@@ -1,25 +1,30 @@
-import { Injectable, Logger } from '@nestjs/common';
-import * as cheerio from 'cheerio';
-import { EcampusAuthService } from './ecampus-auth.service';
-import type { CGPAResponse, SemesterGPA, CourseGrade } from '@nimora/shared-types';
-import { getGradePoint } from '@nimora/shared-utils';
+import { Injectable, Logger } from "@nestjs/common";
+import * as cheerio from "cheerio";
+import { EcampusAuthService } from "./ecampus-auth.service";
+import type {
+  CGPAResponse,
+  SemesterGPA,
+  CourseGrade,
+} from "@nimora/shared-types";
+import { getGradePoint } from "@nimora/shared-utils";
 
 const CGPA_URLS = {
-  COURSE_SELECTION: 'https://ecampus.psgtech.ac.in/studzone2/AttWfStudCourseSelection.aspx',
-  RESULTS: 'https://ecampus.psgtech.ac.in/studzone2/FrmEpsStudResult.aspx',
+  COURSE_SELECTION:
+    "https://ecampus.psgtech.ac.in/studzone2/AttWfStudCourseSelection.aspx",
+  RESULTS: "https://ecampus.psgtech.ac.in/studzone2/FrmEpsStudResult.aspx",
 };
 
 // Grade to grade point mapping (matching Python implementation)
 const GRADE_MAP: Record<string, number> = {
-  'O': 10,
-  'A+': 9,
-  'A': 8,
-  'B+': 7,
-  'B': 6,
-  'C': 5,
-  'RA': 0,
-  'U': 0,
-  'W': 0,
+  O: 10,
+  "A+": 9,
+  A: 8,
+  "B+": 7,
+  B: 6,
+  C: 5,
+  RA: 0,
+  U: 0,
+  W: 0,
 };
 
 @Injectable()
@@ -43,7 +48,7 @@ export class CgpaScraperService {
 
       // Navigate to course selection page for grades
       await page.goto(CGPA_URLS.COURSE_SELECTION, {
-        waitUntil: 'networkidle2',
+        waitUntil: "networkidle2",
         timeout: 30000,
       });
 
@@ -79,7 +84,7 @@ export class CgpaScraperService {
    */
   private async getCompletedSemester(page: any): Promise<number> {
     await page.goto(CGPA_URLS.RESULTS, {
-      waitUntil: 'networkidle2',
+      waitUntil: "networkidle2",
       timeout: 30000,
     });
 
@@ -87,20 +92,20 @@ export class CgpaScraperService {
     const $ = cheerio.load(content);
 
     let semIndex = 1;
-    const table = $('table#DgResult');
+    const table = $("table#DgResult");
 
-    table.find('tr').each((i, row) => {
+    table.find("tr").each((i, row) => {
       if (i === 0) return; // Skip header row
 
-      const cells = $(row).find('td');
+      const cells = $(row).find("td");
       const semCell = $(cells[0]).text().trim();
       const resultCell = $(cells[5]).text().trim();
 
-      if (semCell !== ' ' && semCell !== '') {
+      if (semCell !== " " && semCell !== "") {
         semIndex = parseInt(semCell) || semIndex;
       }
 
-      if (resultCell === 'RA') {
+      if (resultCell === "RA") {
         return false; // Break loop - return this semester
       }
     });
@@ -109,7 +114,7 @@ export class CgpaScraperService {
   }
 
   private extractStudentName($: cheerio.CheerioAPI): string {
-    return $('span.student-name').first().text().trim() || 'Student';
+    return $("span.student-name").first().text().trim() || "Student";
   }
 
   /**
@@ -122,12 +127,12 @@ export class CgpaScraperService {
     const courses: CourseGrade[] = [];
     let mostRecentSemester = 1;
 
-    const table = $('table#PDGCourse');
+    const table = $("table#PDGCourse");
 
-    table.find('tr').each((i, row) => {
+    table.find("tr").each((i, row) => {
       if (i === 0) return; // Skip header row
 
-      const cells = $(row).find('td');
+      const cells = $(row).find("td");
       if (cells.length >= 8) {
         // Based on Python: row[1]=code, row[4]=credits, row[6]=grade, row[7]=semester
         const courseCode = $(cells[1]).text().trim();
@@ -193,7 +198,7 @@ export class CgpaScraperService {
       // Check for backlogs in this semester
       if (sem >= completedSemester) {
         const hasRA = semesterCourses.some(
-          (c) => c.grade === 'RA' || c.grade === 'U',
+          (c) => c.grade === "RA" || c.grade === "U",
         );
         if (hasRA) {
           hasBacklogs = true;
