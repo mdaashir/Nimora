@@ -1,4 +1,4 @@
-# 🎓 Nimora
+# Nimora
 
 <div align="center">
 
@@ -9,24 +9,24 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?style=flat-square&logo=typescript)](https://typescriptlang.org/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg?style=flat-square)](LICENSE)
 
-[📖 Documentation](docs/DEVELOPER_SETUP.md) • [🚀 Quick Start](#quick-start) • [🐳 Docker](#docker-deployment)
+[Documentation](docs/DEVELOPER_SETUP.md) | [Quick Start](#quick-start) | [Docker](#docker-deployment)
 
 </div>
 
 ---
 
-## ✨ Features
+## Features
 
-- **📊 Attendance Tracking** - View attendance with bunk calculator
-- **📈 CGPA Analytics** - Semester-wise GPA breakdown
-- **📅 Timetable & Exams** - Class and exam schedules
-- **�️ Class Timetable** - Conditional access for specific students (22PT roll numbers)
-- **📝 Internal Marks** - Track continuous assessment scores
-- **💬 Auto Feedback** - Automate faculty feedback submission (Puppeteer-based)
-- **🔐 Secure Auth** - JWT authentication with encrypted credentials
-- **🎨 Original Design** - Restored blue theme (#1173d4) from original Skipp branding
+- **Attendance Tracking** - View attendance with bunk calculator
+- **CGPA Analytics** - Semester-wise GPA breakdown
+- **Timetable & Exams** - Class and exam schedules
+- **Class Timetable** - Conditional access for specific students (22PT roll numbers)
+- **Internal Marks** - Track continuous assessment scores
+- **Auto Feedback** - Automate faculty feedback submission (Puppeteer-based)
+- **Secure Auth** - JWT authentication with encrypted credentials
+- **Original Design** - Restored blue theme (#1173d4) from original Skipp branding
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 | Component | Technology |
 |-----------|------------|
@@ -38,7 +38,7 @@
 | **Testing** | Jest + Vitest + Playwright (50+ tests) |
 | **Security** | A Rating - OWASP Top 10 Mitigated |
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 nimora/
@@ -51,7 +51,7 @@ nimora/
 └── docs/                 # Documentation
 ```
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 
@@ -86,17 +86,16 @@ pnpm dev
 **Backend:** http://localhost:3001
 **API Docs:** http://localhost:3001/api/docs
 
-## 🐳 Docker Deployment
+## Docker Deployment
 
 ```bash
-# Start all services
 docker-compose up -d
-
-# Run migrations
 docker-compose exec backend npx prisma migrate deploy
 ```
 
-## 📡 API Endpoints
+[Full Deployment Guide](docs/PRODUCTION_DEPLOYMENT.md)
+
+## API Endpoints
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
@@ -108,21 +107,11 @@ docker-compose exec backend npx prisma migrate deploy
 | POST | `/api/internals` | Get internal marks |
 | POST | `/api/feedback` | Submit feedback |
 
-## 🧪 Testing
+## Documentation
 
-```bash
-# Run all tests
-pnpm -r test
-
-# 47 tests passing:
-# - Backend: 27 tests
-# - Shared-utils: 20 tests
-```
-
-## 📚 Documentation
-
-- [Developer Setup Guide](docs/DEVELOPER_SETUP.md)
-- [Deployment Guide](docs/DEPLOYMENT.md)
+- [Setup & Configuration](docs/ENVIRONMENT_SETUP.md)
+- [Deployment Guide](docs/PRODUCTION_DEPLOYMENT.md)
+- [Developer Setup](docs/DEVELOPER_SETUP.md)
 - [Testing Guide](docs/TESTING.md)
 - [Security Audit](docs/SECURITY_AUDIT.md)
 - [Performance Report](docs/PERFORMANCE.md)
@@ -164,9 +153,9 @@ pnpm test:coverage
 - Security headers configured (HSTS, CSP, X-Frame-Options)
 - Input validation and sanitization
 - No third-party OAuth dependencies
-- Rate limiting on sensitive endpoints
+- RSecurity
 
-## ⚡ Performance
+- **Security Rating:** A - Excellent
 
 - **Bundle Optimization:** Code splitting, tree shaking, SWC minification
 - **Image Optimization:** AVIF/WebP support, responsive images
@@ -177,10 +166,10 @@ pnpm test:coverage
 
 ## 📄 License
 
-MIT License - see [LICENSE](LICENSE) for details.
+MITicense - see [LICENSE](LICENSE) for details.
 
 ---
 
 <div align="center">
-Built with ❤️ using Next.js + NestJS
+Built using Next.js + NestJS
 </div>
