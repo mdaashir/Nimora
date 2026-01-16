@@ -1,4 +1,5 @@
 import { Injectable, Logger } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 import * as cheerio from "cheerio";
 import { EcampusAuthService } from "./ecampus-auth.service";
 import type { AttendanceResponse, CourseAttendance } from "../types";
@@ -8,17 +9,30 @@ import {
   calculateAttendancePercentage,
 } from "../utils";
 
-const ATTENDANCE_URLS = {
-  STUDENT_PERCENTAGE:
-    "https://ecampus.psgtech.ac.in/studzone/Attendance/StudentPercentage",
-  COURSE_PLAN: "https://ecampus.psgtech.ac.in/studzone/Attendance/courseplan",
-};
-
 @Injectable()
 export class AttendanceScraperService {
   private readonly logger = new Logger(AttendanceScraperService.name);
+  private readonly timeout: number;
+  private readonly baseUrl: string;
+  private readonly attendanceUrls: {
+    STUDENT_PERCENTAGE: string;
+    COURSE_PLAN: string;
+  };
 
-  constructor(private readonly ecampusAuth: EcampusAuthService) {}
+  constructor(
+    private readonly ecampusAuth: EcampusAuthService,
+    private readonly configService: ConfigService,
+  ) {
+    this.timeout = parseInt(
+      this.configService.get<string>("SCRAPER_TIMEOUT"),
+      10,
+    );
+    this.baseUrl = this.configService.get("ECAMPUS_BASE_URL");
+    this.attendanceUrls = {
+      STUDENT_PERCENTAGE: `${this.baseUrl}/studzone/Attendance/StudentPercentage`,
+      COURSE_PLAN: `${this.baseUrl}/studzone/Attendance/courseplan`,
+    };
+  }
 
   /**
    * Scrape attendance data from eCampus
@@ -38,9 +52,9 @@ export class AttendanceScraperService {
       const courseMap = await this.getCourseNames(page);
 
       // Navigate to attendance page
-      await page.goto(ATTENDANCE_URLS.STUDENT_PERCENTAGE, {
+      await page.goto(this.attendanceUrls.STUDENT_PERCENTAGE, {
         waitUntil: "networkidle2",
-        timeout: 30000,
+        timeout: this.timeout,
       });
 
       // Get page content
@@ -80,9 +94,9 @@ export class AttendanceScraperService {
    * Get course code to course name initials mapping
    */
   private async getCourseNames(page: any): Promise<Map<string, string>> {
-    await page.goto(ATTENDANCE_URLS.COURSE_PLAN, {
+    await page.goto(this.attendanceUrls.COURSE_PLAN, {
       waitUntil: "networkidle2",
-      timeout: 30000,
+      timeout: this.timeout,
     });
 
     const content = await page.content();

@@ -1,14 +1,9 @@
 import { Injectable, Logger } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 import * as cheerio from "cheerio";
 import { EcampusAuthService } from "./ecampus-auth.service";
 import type { CGPAResponse, SemesterGPA, CourseGrade } from "../types";
 import { getGradePoint } from "../utils";
-
-const CGPA_URLS = {
-  COURSE_SELECTION:
-    "https://ecampus.psgtech.ac.in/studzone2/AttWfStudCourseSelection.aspx",
-  RESULTS: "https://ecampus.psgtech.ac.in/studzone2/FrmEpsStudResult.aspx",
-};
 
 // Grade to grade point mapping (matching Python implementation)
 const GRADE_MAP: Record<string, number> = {
@@ -26,8 +21,27 @@ const GRADE_MAP: Record<string, number> = {
 @Injectable()
 export class CgpaScraperService {
   private readonly logger = new Logger(CgpaScraperService.name);
+  private readonly timeout: number;
+  private readonly baseUrl: string;
+  private readonly cgpaUrls: {
+    COURSE_SELECTION: string;
+    RESULTS: string;
+  };
 
-  constructor(private readonly ecampusAuth: EcampusAuthService) {}
+  constructor(
+    private readonly ecampusAuth: EcampusAuthService,
+    private readonly configService: ConfigService,
+  ) {
+    this.timeout = parseInt(
+      this.configService.get<string>("SCRAPER_TIMEOUT"),
+      10,
+    );
+    this.baseUrl = this.configService.get("ECAMPUS_BASE_URL");
+    this.cgpaUrls = {
+      COURSE_SELECTION: `${this.baseUrl}/studzone2/AttWfStudCourseSelection.aspx`,
+      RESULTS: `${this.baseUrl}/studzone2/FrmEpsStudResult.aspx`,
+    };
+  }
 
   /**
    * Scrape CGPA data from eCampus studzone2
@@ -43,9 +57,9 @@ export class CgpaScraperService {
       const completedSemester = await this.getCompletedSemester(page);
 
       // Navigate to course selection page for grades
-      await page.goto(CGPA_URLS.COURSE_SELECTION, {
+      await page.goto(this.cgpaUrls.COURSE_SELECTION, {
         waitUntil: "networkidle2",
-        timeout: 30000,
+        timeout: this.timeout,
       });
 
       const content = await page.content();
@@ -79,9 +93,9 @@ export class CgpaScraperService {
    * Returns the least semester with RA or next semester if none
    */
   private async getCompletedSemester(page: any): Promise<number> {
-    await page.goto(CGPA_URLS.RESULTS, {
+    await page.goto(this.cgpaUrls.RESULTS, {
       waitUntil: "networkidle2",
-      timeout: 30000,
+      timeout: this.timeout,
     });
 
     const content = await page.content();

@@ -60,12 +60,16 @@ export class AuthController {
     // Set cookies
     response.cookie("access_token", tokens.accessToken, {
       ...COOKIE_OPTIONS,
-      maxAge: 15 * 60 * 1000, // 15 minutes
+      maxAge: this.parseExpiration(
+        this.configService.get("JWT_ACCESS_EXPIRATION"),
+      ),
     });
 
     response.cookie("refresh_token", tokens.refreshToken, {
       ...COOKIE_OPTIONS,
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      maxAge: this.parseExpiration(
+        this.configService.get("JWT_REFRESH_EXPIRATION"),
+      ),
     });
 
     return tokens;
@@ -95,12 +99,16 @@ export class AuthController {
     // Set new cookies
     response.cookie("access_token", tokens.accessToken, {
       ...COOKIE_OPTIONS,
-      maxAge: 15 * 60 * 1000,
+      maxAge: this.parseExpiration(
+        this.configService.get("JWT_ACCESS_EXPIRATION"),
+      ),
     });
 
     response.cookie("refresh_token", tokens.refreshToken, {
       ...COOKIE_OPTIONS,
-      maxAge: 7 * 24 * 60 * 60 * 1000,
+      maxAge: this.parseExpiration(
+        this.configService.get("JWT_REFRESH_EXPIRATION"),
+      ),
     });
 
     return tokens;
@@ -142,5 +150,23 @@ export class AuthController {
       name: user.name,
       avatarUrl: user.avatarUrl,
     };
+  }
+
+  /**
+   * Parse JWT expiration string (e.g., "15m", "7d") to milliseconds
+   */
+  private parseExpiration(exp: string): number {
+    const match = exp.match(/^(\d+)([smhd])$/);
+    if (!match) throw new Error(`Invalid expiration format: ${exp}`);
+    const unit = match[2];
+
+    const multipliers: Record<string, number> = {
+      s: 1000,
+      m: 60 * 1000,
+      h: 60 * 60 * 1000,
+      d: 24 * 60 * 60 * 1000,
+    };
+
+    return value * (multipliers[unit] || multipliers["m"]);
   }
 }

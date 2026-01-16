@@ -2,7 +2,7 @@ import { IsEmail, IsOptional, IsString, IsUrl } from "class-validator";
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
 export class CreateUserDto {
-  @ApiProperty({ example: "student@psgtech.ac.in" })
+  @ApiProperty({ example: "20PT01@psgtech.ac.in" })
   @IsEmail()
   email: string;
 
@@ -15,9 +15,4 @@ export class CreateUserDto {
   @IsUrl()
   @IsOptional()
   avatarUrl?: string;
-
-  @ApiPropertyOptional()
-  @IsString()
-  @IsOptional()
-  googleId?: string;
 }

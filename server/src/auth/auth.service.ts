@@ -144,6 +144,8 @@ export class AuthService {
   private async generateTokens(
     userId: string,
     email: string,
+    userAgent?: string,
+    ipAddress?: string,
   ): Promise<{ accessToken: string; refreshToken: string }> {
     const payload = { sub: userId, email };
 
@@ -153,18 +155,27 @@ export class AuthService {
     // Generate refresh token with different secret/expiration
     const refreshToken = this.jwtService.sign(payload, {
       secret: this.configService.get<string>("JWT_REFRESH_SECRET"),
-      expiresIn: "7d",
+      expiresIn: this.configService.get<string>("JWT_REFRESH_EXPIRATION"),
     });
 
     // Store refresh token in database
     const expiresAt = new Date();
-    expiresAt.setDate(expiresAt.getDate() + 7); // 7 days
+    const refreshExpirationStr = this.configService.get<string>(
+      "JWT_REFRESH_EXPIRATION",
+    );
+    const refreshExpirationDays = parseInt(
+      refreshExpirationStr.replace(/\D/g, ""),
+      10,
+    );
+    expiresAt.setDate(expiresAt.getDate() + refreshExpirationDays);
 
     await this.prisma.session.create({
       data: {
         userId,
         refreshToken,
         expiresAt,
+        userAgent,
+        ipAddress,
       },
     });
 
@@ -175,7 +186,10 @@ export class AuthService {
    * Hash password
    */
   async hashPassword(password: string): Promise<string> {
-    const saltRounds = 10;
+    const saltRounds = parseInt(
+      this.configService.get("BCRYPT_SALT_ROUNDS"),
+      10,
+    );
     return bcrypt.hash(password, saltRounds);
   }
 

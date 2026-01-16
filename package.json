@@ -47,13 +47,28 @@
   "license": "MIT",
   "devDependencies": {
     "husky": "^9.0.0",
-    "lint-staged": "^15.2.0"
+    "lint-staged": "^16.2.7"
   },
   "engines": {
     "node": ">=20.0.0",
     "pnpm": ">=9.0.0"
   },
   "packageManager": "pnpm@9.15.0",
+  "pnpm": {
+    "overrides": {
+      "glob": "^10.3.10",
+      "rimraf": "^6.0.0",
+      "npmlog": "^7.0.1",
+      "gauge": "^5.0.1",
+      "are-we-there-yet": "^4.0.1",
+      "inflight": "^1.0.6",
+      "whatwg-encoding": "^3.1.1",
+      "sol-redis-pool": "^0.3.3"
+    }
+  },
+  ".pnpmfile.cjs": {
+    "note": "Remaining 5 deprecated warnings are from deep transitive deps (sol-redis-pool, whatwg-encoding, etc.) that cannot be updated without breaking changes in upstream packages. These don't affect functionality."
+  },
   "dependencies": {
     "@testing-library/jest-dom": "^6.6.3"
   }

@@ -15,13 +15,15 @@ import { ScrapersModule } from "./scrapers/scrapers.module";
 import { CacheModule } from "./cache/cache.module";
 import { HealthModule } from "./health/health.module";
 import { AllExceptionsFilter } from "./common/filters/all-exceptions.filter";
+import { validate } from "./config/env.validation";
 
 @Module({
   imports: [
-    // Configuration
+    // Configuration with validation
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: [".env.local", ".env"],
+      validate,
     }),
 
     // Core modules

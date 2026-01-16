@@ -1,14 +1,25 @@
 import { Injectable, Logger, UnauthorizedException } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 import puppeteer, { Browser, Page } from "puppeteer";
-
-const ECAMPUS_URLS = {
-  STUDZONE: "https://ecampus.psgtech.ac.in/studzone",
-  STUDZONE2: "https://ecampus.psgtech.ac.in/studzone2/",
-};
 
 @Injectable()
 export class EcampusAuthService {
   private readonly logger = new Logger(EcampusAuthService.name);
+  private readonly timeout: number;
+  private readonly baseUrl: string;
+  private readonly ecampusUrls: {
+    STUDZONE: string;
+    STUDZONE2: string;
+  };
+
+  constructor(private configService: ConfigService) {
+    this.timeout = parseInt(this.configService.get("SCRAPER_TIMEOUT"), 10);
+    this.baseUrl = this.configService.get("ECAMPUS_BASE_URL");
+    this.ecampusUrls = {
+      STUDZONE: `${this.baseUrl}/studzone`,
+      STUDZONE2: `${this.baseUrl}/studzone2/`,
+    };
+  }
 
   /**
    * Create a new browser instance
@@ -44,9 +55,9 @@ export class EcampusAuthService {
       );
 
       // Navigate to login page
-      await page.goto(ECAMPUS_URLS.STUDZONE, {
+      await page.goto(this.ecampusUrls.STUDZONE, {
         waitUntil: "networkidle2",
-        timeout: 30000,
+        timeout: this.timeout,
       });
 
       // Wait for login form
@@ -97,9 +108,9 @@ export class EcampusAuthService {
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
       );
 
-      await page.goto(ECAMPUS_URLS.STUDZONE2, {
+      await page.goto(this.ecampusUrls.STUDZONE2, {
         waitUntil: "networkidle2",
-        timeout: 30000,
+        timeout: this.timeout,
       });
 
       // Wait for and fill login form

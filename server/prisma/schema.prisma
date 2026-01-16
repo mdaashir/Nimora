@@ -15,7 +15,6 @@ model User {
   email                 String    @unique
   name                  String?
   avatarUrl             String?
-  googleId              String?   @unique
 
   // Encrypted eCampus credentials (for scraping)
   encryptedRollNo       String?

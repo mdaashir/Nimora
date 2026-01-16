@@ -1,4 +1,5 @@
 import { Injectable, Logger } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 import * as cheerio from "cheerio";
 import { EcampusAuthService } from "./ecampus-auth.service";
 import type {
@@ -8,18 +9,30 @@ import type {
   TimetableSlot,
 } from "../types";
 
-const TIMETABLE_URLS = {
-  EXAM_SCHEDULE:
-    "https://ecampus.psgtech.ac.in/studzone/ContinuousAssessment/CATestTimeTable",
-  CLASS_TIMETABLE:
-    "https://ecampus.psgtech.ac.in/studzone/Attendance/courseplan",
-};
-
 @Injectable()
 export class TimetableScraperService {
   private readonly logger = new Logger(TimetableScraperService.name);
+  private readonly timeout: number;
+  private readonly baseUrl: string;
+  private readonly timetableUrls: {
+    EXAM_SCHEDULE: string;
+    CLASS_TIMETABLE: string;
+  };
 
-  constructor(private readonly ecampusAuth: EcampusAuthService) {}
+  constructor(
+    private readonly ecampusAuth: EcampusAuthService,
+    private readonly configService: ConfigService,
+  ) {
+    this.timeout = parseInt(
+      this.configService.get<string>("SCRAPER_TIMEOUT"),
+      10,
+    );
+    this.baseUrl = this.configService.get("ECAMPUS_BASE_URL");
+    this.timetableUrls = {
+      EXAM_SCHEDULE: `${this.baseUrl}/studzone/ContinuousAssessment/CATestTimeTable`,
+      CLASS_TIMETABLE: `${this.baseUrl}/studzone/Attendance/courseplan`,
+    };
+  }
 
   /**
    * Scrape exam schedule from eCampus
@@ -38,9 +51,9 @@ export class TimetableScraperService {
       const courseMap = await this.getCourseNames(page);
 
       // Navigate to exam schedule page
-      await page.goto(TIMETABLE_URLS.EXAM_SCHEDULE, {
+      await page.goto(this.timetableUrls.EXAM_SCHEDULE, {
         waitUntil: "networkidle2",
-        timeout: 30000,
+        timeout: this.timeout,
       });
 
       const content = await page.content();
@@ -71,9 +84,9 @@ export class TimetableScraperService {
     );
 
     try {
-      await page.goto(TIMETABLE_URLS.CLASS_TIMETABLE, {
+      await page.goto(this.timetableUrls.EXAM_SCHEDULE, {
         waitUntil: "networkidle2",
-        timeout: 30000,
+        timeout: this.timeout,
       });
 
       const content = await page.content();
@@ -95,9 +108,9 @@ export class TimetableScraperService {
    * Get course code to course name initials mapping
    */
   private async getCourseNames(page: any): Promise<Map<string, string>> {
-    await page.goto(TIMETABLE_URLS.CLASS_TIMETABLE, {
+    await page.goto(this.timetableUrls.CLASS_TIMETABLE, {
       waitUntil: "networkidle2",
-      timeout: 30000,
+      timeout: this.timeout,
     });
 
     const content = await page.content();

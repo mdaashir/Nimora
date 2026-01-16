@@ -15,8 +15,8 @@ export class CryptoService {
     if (!encryptionKey || encryptionKey.length < 32) {
       throw new Error("ENCRYPTION_KEY must be at least 32 characters long");
     }
-    // Derive a proper key from the config key
-    this.key = crypto.scryptSync(encryptionKey, "nimora-salt", this.keyLength);
+    const salt = this.configService.get<string>("ENCRYPTION_SALT");
+    this.key = crypto.scryptSync(encryptionKey, salt, this.keyLength);
   }
 
   /**

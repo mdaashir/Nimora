@@ -2,7 +2,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { IsString, IsNumber, IsOptional, Min } from "class-validator";
 
 export class FeedbackRequestDto {
-  @ApiProperty({ description: "Student roll number", example: "21Z123" })
+  @ApiProperty({ description: "Student roll number", example: "20PT01" })
   @IsString()
   rollno: string;
 

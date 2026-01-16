@@ -2,12 +2,13 @@ import axios, { AxiosError, AxiosInstance, InternalAxiosRequestConfig } from 'ax
 import type { ApiResponse, ErrorResponse } from '@/types';
 
 // API base URL from environment
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
+const API_URL = process.env.NEXT_PUBLIC_API_URL!;
+const API_TIMEOUT = parseInt(process.env.NEXT_PUBLIC_API_TIMEOUT!, 10);
 
 // Create axios instance
 const apiClient: AxiosInstance = axios.create({
   baseURL: API_URL,
-  timeout: 30000,
+  timeout: API_TIMEOUT,
   headers: {
     'Content-Type': 'application/json',
   },

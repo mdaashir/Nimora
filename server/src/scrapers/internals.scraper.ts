@@ -1,16 +1,25 @@
 import { Injectable, Logger } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 import * as cheerio from "cheerio";
 import { EcampusAuthService } from "./ecampus-auth.service";
 import type { InternalsResponse, InternalMark, CourseInternal } from "../types";
 
-const INTERNALS_URL =
-  "https://ecampus.psgtech.ac.in/studzone/ContinuousAssessment/CAMarksView";
-
 @Injectable()
 export class InternalsScraperService {
   private readonly logger = new Logger(InternalsScraperService.name);
+  private readonly timeout: number;
 
-  constructor(private readonly ecampusAuth: EcampusAuthService) {}
+  constructor(
+    private readonly ecampusAuth: EcampusAuthService,
+    private readonly configService: ConfigService,
+  ) {
+    this.timeout = parseInt(
+      this.configService.get<string>("SCRAPER_TIMEOUT"),
+      10,
+    );
+    this.baseUrl = this.configService.get("ECAMPUS_BASE_URL");
+    this.internalsUrl = `${this.baseUrl}/studzone/ContinuousAssessment/CAMarksView`;
+  }
 
   /**
    * Scrape internal marks from eCampus
@@ -26,9 +35,9 @@ export class InternalsScraperService {
 
     try {
       // Navigate to internals page
-      await page.goto(INTERNALS_URL, {
+      await page.goto(this.internalsUrl, {
         waitUntil: "networkidle2",
-        timeout: 30000,
+        timeout: this.timeout,
       });
 
       const content = await page.content();

@@ -2,7 +2,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { IsString } from "class-validator";
 
 export class CgpaRequestDto {
-  @ApiProperty({ description: "Student roll number", example: "21Z123" })
+  @ApiProperty({ description: "Student roll number", example: "20PT01" })
   @IsString()
   rollno: string;
 
