@@ -1,17 +1,16 @@
 import { test, expect } from '@playwright/test';
 
-// Skip E2E tests in CI environment - they require running backend and frontend servers
-const skipInCI = process.env.CI ? test.skip : test;
-
-skipInCI.describe('Landing Page Redirect', () => {
-  skipInCI('should redirect to login page', async ({ page }) => {
+test.describe('Landing Page Redirect', () => {
+  test('should redirect to login page', async ({ page }) => {
+    test.skip(!!process.env.CI, 'Skipping E2E tests in CI environment');
     await page.goto('/');
     await expect(page).toHaveURL('/login');
   });
 });
 
 test.describe('Login Page', () => {
-  skipInCI('should display login form', async ({ page }) => {
+  test('should display login form', async ({ page }) => {
+    test.skip(!!process.env.CI, 'Skipping E2E tests in CI environment');
     await page.goto('/login');
 
     await expect(page.locator('input[placeholder*="Roll"]')).toBeVisible();
@@ -19,7 +18,8 @@ test.describe('Login Page', () => {
     await expect(page.getByRole('button', { name: /sign in/i })).toBeVisible();
   });
 
-  skipInCI('should show password toggle', async ({ page }) => {
+  test('should show password toggle', async ({ page }) => {
+    test.skip(!!process.env.CI, 'Skipping E2E tests in CI environment');
     await page.goto('/login');
 
     const passwordInput = page.locator('input[type="password"]');
@@ -36,7 +36,8 @@ test.describe('Login Page', () => {
     }
   });
 
-  skipInCI('should have proper accessibility', async ({ page }) => {
+  test('should have proper accessibility', async ({ page }) => {
+    test.skip(!!process.env.CI, 'Skipping E2E tests in CI environment');
     await page.goto('/login');
 
     // Check for proper labels

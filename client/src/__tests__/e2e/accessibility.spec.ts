@@ -1,16 +1,15 @@
 import { test, expect } from '@playwright/test';
 
-// Skip E2E tests in CI environment - they require running backend and frontend servers
-const skipInCI = process.env.CI ? test.skip : test;
-
-skipInCI.describe('Dashboard Pages Accessibility', () => {
-  skipInCI.beforeEach(async ({ page }) => {
+test.describe('Dashboard Pages Accessibility', () => {
+  test.beforeEach(async ({ page }) => {
+    test.skip(!!process.env.CI, 'Skipping E2E tests in CI environment');
     // Note: These tests would need authentication
     // For now, we'll just check if pages exist
     await page.goto('/');
   });
 
-  skipInCI('login page should be accessible', async ({ page }) => {
+  test('login page should be accessible', async ({ page }) => {
+    test.skip(!!process.env.CI, 'Skipping E2E tests in CI environment');
     await page.goto('/login');
 
     // Check basic accessibility requirements
@@ -21,7 +20,8 @@ skipInCI.describe('Dashboard Pages Accessibility', () => {
     await expect(heading).toBeVisible();
   });
 
-  skipInCI('should have responsive design', async ({ page }) => {
+  test('should have responsive design', async ({ page }) => {
+    test.skip(!!process.env.CI, 'Skipping E2E tests in CI environment');
     await page.goto('/login');
 
     // Test mobile viewport
@@ -34,8 +34,9 @@ skipInCI.describe('Dashboard Pages Accessibility', () => {
   });
 });
 
-skipInCI.describe('Performance', () => {
-  skipInCI('login page should load quickly', async ({ page }) => {
+test.describe('Performance', () => {
+  test('login page should load quickly', async ({ page }) => {
+    test.skip(!!process.env.CI, 'Skipping E2E tests in CI environment');
     const startTime = Date.now();
     await page.goto('/login');
     const loadTime = Date.now() - startTime;
