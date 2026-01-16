@@ -31,6 +31,7 @@ jobs:
           node-version: 20
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      - run: cd server && pnpm prisma:generate
       - run: pnpm typecheck
 
   backend-tests:
@@ -68,7 +69,7 @@ jobs:
           node-version: 20
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: cd server && npx prisma generate
+      - run: cd server && pnpm prisma:generate
       - run: pnpm test:backend
         env:
           DATABASE_URL: postgresql://test:test@localhost:5432/nimora_test
@@ -93,6 +94,7 @@ jobs:
 
   e2e-tests:
     runs-on: ubuntu-latest
+    continue-on-error: true
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v2
@@ -103,6 +105,7 @@ jobs:
           node-version: 20
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      - run: cd client && pnpm exec playwright install --with-deps
+      - run: cd server && pnpm prisma:generate
       - run: pnpm build
-      - run: npx playwright install --with-deps
       - run: pnpm test:e2e

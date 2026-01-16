@@ -15,12 +15,21 @@ import { PrismaModule } from "../prisma/prisma.module";
     PassportModule.register({ defaultStrategy: "jwt" }),
     JwtModule.registerAsync({
       imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => ({
-        secret: configService.get<string>("JWT_ACCESS_SECRET"),
-        signOptions: {
-          expiresIn: configService.get<string>("JWT_ACCESS_EXPIRATION"),
-        },
-      }),
+      useFactory: (configService: ConfigService) => {
+        const secret = configService.get<string>("JWT_ACCESS_SECRET");
+        const expiresIn = configService.get<string>("JWT_ACCESS_EXPIRATION");
+
+        if (!secret || !expiresIn) {
+          throw new Error(
+            "JWT_ACCESS_SECRET and JWT_ACCESS_EXPIRATION must be configured",
+          );
+        }
+
+        return {
+          secret,
+          signOptions: { expiresIn: expiresIn as any },
+        };
+      },
       inject: [ConfigService],
     }),
     UsersModule,

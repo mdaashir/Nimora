@@ -12,6 +12,11 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     private readonly authService: AuthService,
     configService: ConfigService,
   ) {
+    const secret = configService.get<string>("JWT_ACCESS_SECRET");
+    if (!secret) {
+      throw new Error("JWT_ACCESS_SECRET not configured");
+    }
+
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
         // Extract from cookie first
@@ -20,7 +25,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         ExtractJwt.fromAuthHeaderAsBearerToken(),
       ]),
       ignoreExpiration: false,
-      secret: configService.get<string>("JWT_ACCESS_SECRET"),
+      secretOrKey: secret,
     });
   }
 

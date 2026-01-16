@@ -23,11 +23,16 @@ export class TimetableScraperService {
     private readonly ecampusAuth: EcampusAuthService,
     private readonly configService: ConfigService,
   ) {
-    this.timeout = parseInt(
-      this.configService.get<string>("SCRAPER_TIMEOUT"),
-      10,
-    );
-    this.baseUrl = this.configService.get("ECAMPUS_BASE_URL");
+    const scraperTimeout = this.configService.get<string>("SCRAPER_TIMEOUT");
+    if (!scraperTimeout) {
+      throw new Error("SCRAPER_TIMEOUT not configured");
+    }
+    this.timeout = parseInt(scraperTimeout, 10);
+    const baseUrl = this.configService.get<string>("ECAMPUS_BASE_URL");
+    if (!baseUrl) {
+      throw new Error("ECAMPUS_BASE_URL not configured");
+    }
+    this.baseUrl = baseUrl;
     this.timetableUrls = {
       EXAM_SCHEDULE: `${this.baseUrl}/studzone/ContinuousAssessment/CATestTimeTable`,
       CLASS_TIMETABLE: `${this.baseUrl}/studzone/Attendance/courseplan`,

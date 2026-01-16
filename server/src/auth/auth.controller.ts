@@ -61,14 +61,14 @@ export class AuthController {
     response.cookie("access_token", tokens.accessToken, {
       ...COOKIE_OPTIONS,
       maxAge: this.parseExpiration(
-        this.configService.get("JWT_ACCESS_EXPIRATION"),
+        this.configService.get<string>("JWT_ACCESS_EXPIRATION") || "15m",
       ),
     });
 
     response.cookie("refresh_token", tokens.refreshToken, {
       ...COOKIE_OPTIONS,
       maxAge: this.parseExpiration(
-        this.configService.get("JWT_REFRESH_EXPIRATION"),
+        this.configService.get<string>("JWT_REFRESH_EXPIRATION") || "7d",
       ),
     });
 
@@ -100,14 +100,14 @@ export class AuthController {
     response.cookie("access_token", tokens.accessToken, {
       ...COOKIE_OPTIONS,
       maxAge: this.parseExpiration(
-        this.configService.get("JWT_ACCESS_EXPIRATION"),
+        this.configService.get<string>("JWT_ACCESS_EXPIRATION") || "15m",
       ),
     });
 
     response.cookie("refresh_token", tokens.refreshToken, {
       ...COOKIE_OPTIONS,
       maxAge: this.parseExpiration(
-        this.configService.get("JWT_REFRESH_EXPIRATION"),
+        this.configService.get<string>("JWT_REFRESH_EXPIRATION") || "7d",
       ),
     });
 
@@ -158,6 +158,7 @@ export class AuthController {
   private parseExpiration(exp: string): number {
     const match = exp.match(/^(\d+)([smhd])$/);
     if (!match) throw new Error(`Invalid expiration format: ${exp}`);
+    const value = parseInt(match[1], 10);
     const unit = match[2];
 
     const multipliers: Record<string, number> = {

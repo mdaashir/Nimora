@@ -153,9 +153,20 @@ export class AuthService {
     const accessToken = this.jwtService.sign(payload);
 
     // Generate refresh token with different secret/expiration
+    const refreshSecret = this.configService.get<string>("JWT_REFRESH_SECRET");
+    const refreshExpiration = this.configService.get<string>(
+      "JWT_REFRESH_EXPIRATION",
+    );
+
+    if (!refreshSecret || !refreshExpiration) {
+      throw new Error(
+        "JWT_REFRESH_SECRET and JWT_REFRESH_EXPIRATION must be configured",
+      );
+    }
+
     const refreshToken = this.jwtService.sign(payload, {
-      secret: this.configService.get<string>("JWT_REFRESH_SECRET"),
-      expiresIn: this.configService.get<string>("JWT_REFRESH_EXPIRATION"),
+      secret: refreshSecret,
+      expiresIn: refreshExpiration as any,
     });
 
     // Store refresh token in database
@@ -163,6 +174,9 @@ export class AuthService {
     const refreshExpirationStr = this.configService.get<string>(
       "JWT_REFRESH_EXPIRATION",
     );
+    if (!refreshExpirationStr) {
+      throw new Error("JWT_REFRESH_EXPIRATION not configured");
+    }
     const refreshExpirationDays = parseInt(
       refreshExpirationStr.replace(/\D/g, ""),
       10,
@@ -186,10 +200,11 @@ export class AuthService {
    * Hash password
    */
   async hashPassword(password: string): Promise<string> {
-    const saltRounds = parseInt(
-      this.configService.get("BCRYPT_SALT_ROUNDS"),
-      10,
-    );
+    const saltRoundsStr = this.configService.get<string>("BCRYPT_SALT_ROUNDS");
+    if (!saltRoundsStr) {
+      throw new Error("BCRYPT_SALT_ROUNDS not configured");
+    }
+    const saltRounds = parseInt(saltRoundsStr, 10);
     return bcrypt.hash(password, saltRounds);
   }
 

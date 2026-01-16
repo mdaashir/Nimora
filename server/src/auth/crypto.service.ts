@@ -16,7 +16,14 @@ export class CryptoService {
       throw new Error("ENCRYPTION_KEY must be at least 32 characters long");
     }
     const salt = this.configService.get<string>("ENCRYPTION_SALT");
-    this.key = crypto.scryptSync(encryptionKey, salt, this.keyLength);
+    if (!salt || salt.length < 8) {
+      throw new Error("ENCRYPTION_SALT must be at least 8 characters long");
+    }
+    this.key = crypto.scryptSync(
+      encryptionKey as crypto.BinaryLike,
+      salt as crypto.BinaryLike,
+      this.keyLength,
+    );
   }
 
   /**
