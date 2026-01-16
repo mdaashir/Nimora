@@ -22,13 +22,10 @@
     "lint": "pnpm --parallel -r run lint",
     "typecheck": "pnpm --parallel -r run typecheck",
     "format": "pnpm --parallel -r run format",
-    "prepare": "husky install",
+    "prepare": "husky",
     "docker:up": "docker-compose up -d",
-    "docker:up:dev": "docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d",
     "docker:down": "docker-compose down",
-    "docker:down:dev": "docker-compose -f docker-compose.yml -f docker-compose.dev.yml down",
     "docker:build": "docker-compose build",
-    "docker:build:dev": "docker-compose -f docker-compose.yml -f docker-compose.dev.yml build",
     "docker:logs": "docker-compose logs -f",
     "docker:restart": "docker-compose restart",
     "docker:prune": "docker system prune -f",
@@ -47,14 +44,14 @@
   "author": "mdaashir",
   "license": "MIT",
   "devDependencies": {
-    "husky": "^9.0.0",
+    "husky": "^9.1.7",
     "lint-staged": "^16.2.7"
   },
   "engines": {
     "node": ">=20.0.0",
     "pnpm": ">=9.0.0"
   },
-  "packageManager": "pnpm@9.15.0",
+  "packageManager": "pnpm@10.28.0",
   "pnpm": {
     "overrides": {
       "glob": "^10.3.10",
@@ -65,12 +62,20 @@
       "inflight": "^1.0.6",
       "whatwg-encoding": "^3.1.1",
       "sol-redis-pool": "^0.3.3"
-    }
-  },
-  ".pnpmfile.cjs": {
-    "note": "Remaining 5 deprecated warnings are from deep transitive deps (sol-redis-pool, whatwg-encoding, etc.) that cannot be updated without breaking changes in upstream packages. These don't affect functionality."
+    },
+    "onlyBuiltDependencies": [
+      "@nestjs/core",
+      "@prisma/engines",
+      "@scarf/scarf",
+      "bcrypt",
+      "esbuild",
+      "prisma",
+      "puppeteer",
+      "sharp",
+      "unrs-resolver"
+    ]
   },
   "dependencies": {
-    "@testing-library/jest-dom": "^6.6.3"
+    "@testing-library/jest-dom": "^6.9.1"
   }
 }

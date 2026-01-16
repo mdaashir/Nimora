@@ -47,6 +47,8 @@ nimora/
 │   ├── utils/            # Utility functions
 │   ├── src/              # NestJS modules
 │   └── prisma/           # Database schema
+├── .env                  # Environment variables
+├── .env.example          # Environment variables template
 ├── .github/workflows/    # CI/CD pipelines
 ├── .husky/               # Git hooks
 └── docker-compose.yml    # Docker deployment
@@ -72,8 +74,7 @@ cd Nimora
 pnpm install
 
 # Setup environment variables
-cp server/.env.example server/.env
-cp client/.env.example client/.env.local
+cp .env.example .env
 
 # Generate Prisma Client
 cd server && pnpm prisma:generate
@@ -114,44 +115,57 @@ docker-compose logs -f
 
 Before running Docker, ensure all required environment variables are set in:
 
-- `server/.env` - Backend configuration (database, JWT, encryption, Redis)
-- `client/.env.local` - Frontend configuration (API URL, timeout)
+- `.env` - All application configuration (database, JWT, encryption, Redis, API URLs)
 
-See `.env.example` files for required variables.
+See `.env.example` for all required variables.
 
 ## Environment Variables
 
-### Backend (server/.env)
+### Application (.env)
 
-**Required Variables (15):**
+**Required Variables:**
 
-- `DATABASE_URL` - PostgreSQL connection string
-- `PORT` - Server port (default: 3001)
-- `NODE_ENV` - Environment (development/production)
-- `JWT_ACCESS_SECRET` - JWT signing key (min 32 chars)
+**Database Configuration:**
+
+- `POSTGRES_USER` - PostgreSQL username
+- `POSTGRES_PASSWORD` - PostgreSQL password
+- `POSTGRES_DB` - PostgreSQL database name
+
+**Redis Configuration:**
+
+- `REDIS_PASSWORD` - Redis password
+
+**JWT Authentication:**
+
+- `JWT_ACCESS_SECRET` - JWT access token signing key (min 32 chars)
 - `JWT_ACCESS_EXPIRATION` - Access token TTL (default: 15m)
-- `JWT_REFRESH_SECRET` - Refresh token key (min 32 chars)
+- `JWT_REFRESH_SECRET` - JWT refresh token signing key (min 32 chars)
 - `JWT_REFRESH_EXPIRATION` - Refresh token TTL (default: 7d)
+
+**Encryption:**
+
 - `ENCRYPTION_KEY` - AES-256-GCM encryption key (32-byte hex)
 - `ENCRYPTION_SALT` - Encryption salt (min 8 chars)
-- `BCRYPT_SALT_ROUNDS` - Password hashing rounds (default: 12)
+
+**Application Settings:**
+
+- `NODE_ENV` - Environment (development/production)
+- `PORT` - Server port (default: 3001)
+- `FRONTEND_URL` - Frontend URL for CORS
+- `NEXT_PUBLIC_API_URL` - Backend API URL for frontend
 - `ECAMPUS_BASE_URL` - eCampus portal URL
+
+**Scraping & Cache:**
+
 - `SCRAPER_TIMEOUT` - Web scraper timeout in ms (default: 30000)
 - `CACHE_TTL` - Cache TTL in seconds (default: 3600)
 - `CACHE_MAX_ITEMS` - Max cached items (default: 100)
-- `FRONTEND_URL` - Frontend URL for CORS
+- `REDIS_URL` - Redis connection URL (optional)
 
-**Optional Variables:**
+**Security & Performance:**
 
-- `REDIS_URL` - Redis connection URL (uses in-memory cache if not set)
+- `BCRYPT_SALT_ROUNDS` - Password hashing rounds (default: 12)
 - `LOG_LEVEL` - Logging level (default: debug)
-
-### Frontend (client/.env.local)
-
-**Required Variables (2):**
-
-- `NEXT_PUBLIC_API_URL` - Backend API URL
-- `NEXT_PUBLIC_API_TIMEOUT` - Request timeout in ms
 
 **Optional:**
 
@@ -274,7 +288,7 @@ cd server && pnpm prisma:generate
 **Port Already in Use**
 
 ```bash
-# Change PORT in server/.env
+# Change PORT in .env
 PORT=3002
 ```
 

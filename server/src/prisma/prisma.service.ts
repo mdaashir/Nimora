@@ -15,6 +15,7 @@ export class PrismaService
 
   constructor() {
     super({
+      datasourceUrl: process.env.DATABASE_URL,
       log: [
         { level: "query", emit: "event" },
         { level: "error", emit: "stdout" },

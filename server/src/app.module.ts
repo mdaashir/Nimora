@@ -22,7 +22,7 @@ import { validate } from "./config/env.validation";
     // Configuration with validation
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: [".env.local", ".env"],
+      envFilePath: ["../.env", ".env"],
       validate,
     }),
 
