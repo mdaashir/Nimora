@@ -14,6 +14,7 @@ const Login = () => {
     const [isInputFocused, setIsInputFocused] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
     const navigate = useNavigate()
+    const currentYear = new Date().getFullYear()
 
     // Add effect to handle viewport adjustments on mobile
     useEffect(() => {
@@ -204,7 +205,7 @@ const Login = () => {
             <div className="absolute bottom-0 left-0 right-0 bg-black/50 backdrop-blur-sm border-t border-gray-700/50">
                 <div className="max-w-md mx-auto px-8 py-4">
                     <p className="text-center text-gray-400 text-sm">
-                        © 2025 Skipp. All rights reserved.
+                        © {currentYear} Skipp. All rights reserved.
                     </p>
                 </div>
             </div>
