@@ -1,0 +1,31 @@
+services:
+  backend:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: nimora-backend
+    restart: unless-stopped
+    env_file:
+      - path: ./server/.env
+        required: false
+    ports:
+      - "8000:8000"
+    networks:
+      - nimora-net
+
+  frontend:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: nimora-frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - nimora-net
+
+networks:
+  nimora-net:
+    driver: bridge
